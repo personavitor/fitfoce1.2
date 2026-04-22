@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FitForce – Treino Inteligente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash" class="screen active">
+  <div class="splash-bg"></div>
+  <div class="splash-content">
+    <div class="logo-mark">⚡</div>
+    <h1 class="logo-text">FITFORCE</h1>
+    <p class="logo-sub">TREINO. EVOLUÇÃO. RESULTADO.</p>
+    <div class="splash-loader"><div class="loader-bar"></div></div>
+  </div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div id="auth" class="screen">
+  <div class="auth-bg"></div>
+  <div class="auth-container">
+    <div class="auth-logo">
+      <span class="logo-mark-sm">⚡</span>
+      <span class="brand">FITFORCE</span>
+    </div>
+
+    <div id="login-form" class="auth-card">
+      <h2>Bem-vindo de volta</h2>
+      <p class="auth-subtitle">Faça login para continuar</p>
+      <div class="field-group">
+        <label>E-mail</label>
+        <input type="email" id="login-email" placeholder="seu@email.com">
+      </div>
+      <div class="field-group">
+        <label>Senha</label>
+        <input type="password" id="login-password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" onclick="handleLogin()">ENTRAR</button>
+      <div class="auth-divider"><span>ou</span></div>
+      <button class="btn-ghost" onclick="showRegister()">CRIAR CONTA GRÁTIS</button>
+    </div>
+
+    <div id="register-form" class="auth-card hidden">
+      <h2>Criar conta</h2>
+      <p class="auth-subtitle">Comece sua jornada hoje</p>
+
+      <div class="plans-row">
+        <div class="plan-card" onclick="selectPlan('free', this)">
+          <div class="plan-badge">GRÁTIS</div>
+          <div class="plan-price">R$ 0</div>
+          <div class="plan-desc">Treino básico</div>
+        </div>
+        <div class="plan-card" onclick="selectPlan('pro', this)">
+          <div class="plan-badge pro">PRO</div>
+          <div class="plan-price">R$ 29<span>/mês</span></div>
+          <div class="plan-desc">IA + Ranking + Desafios</div>
+        </div>
+        <div class="plan-card" onclick="selectPlan('elite', this)">
+          <div class="plan-badge elite">ELITE</div>
+          <div class="plan-price">R$ 59<span>/mês</span></div>
+          <div class="plan-desc">Tudo + Coaching</div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Nome completo</label>
+        <input type="text" id="reg-name" placeholder="Seu nome">
+      </div>
+      <div class="field-group">
+        <label>E-mail</label>
+        <input type="email" id="reg-email" placeholder="seu@email.com">
+      </div>
+      <div class="field-group">
+        <label>Senha</label>
+        <input type="password" id="reg-password" placeholder="Mínimo 8 caracteres">
+      </div>
+      <button class="btn-primary" onclick="handleRegister()">CRIAR CONTA →</button>
+      <button class="btn-ghost" onclick="showLogin()">Já tenho conta</button>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING / QUIZ (8 passos) -->
+<div id="onboarding" class="screen">
+  <div class="onboard-header">
+    <div class="progress-steps">
+      <div class="step-dot active" id="sd1"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="sd2"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="sd3"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="sd4"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="sd5"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="sd6"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="sd7"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="sd8"></div>
+    </div>
+    <div class="step-label" id="step-label">Passo 1 de 8</div>
+  </div>
+
+  <div class="quiz-container">
+
+    <!-- Step 1: Goal -->
+    <div class="quiz-step active" id="step1">
+      <div class="quiz-emoji">🎯</div>
+      <h2>Qual é seu objetivo?</h2>
+      <div class="options-grid">
+        <div class="option-card" onclick="selectOption(this, 'goal', 'Perda de peso')">
+          <span class="opt-icon">🔥</span><span>Emagrecer</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'goal', 'Ganho de massa')">
+          <span class="opt-icon">💪</span><span>Ganhar massa</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'goal', 'Condicionamento')">
+          <span class="opt-icon">🏃</span><span>Condicionamento</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'goal', 'Saúde geral')">
+          <span class="opt-icon">❤️</span><span>Manter</span>
+        </div>
+      </div>
+      <button class="btn-primary mt" onclick="nextStep(2)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 2: Level -->
+    <div class="quiz-step" id="step2">
+      <div class="quiz-emoji">📊</div>
+      <h2>Qual seu nível de experiência?</h2>
+      <div class="options-col">
+        <div class="option-row" onclick="selectOption(this, 'level', 'Iniciante')">
+          <div><strong>Iniciante</strong><p>Menos de 6 meses de treino</p></div><span>→</span>
+        </div>
+        <div class="option-row" onclick="selectOption(this, 'level', 'Intermediário')">
+          <div><strong>Intermediário</strong><p>6 meses a 2 anos</p></div><span>→</span>
+        </div>
+        <div class="option-row" onclick="selectOption(this, 'level', 'Avançado')">
+          <div><strong>Avançado</strong><p>Mais de 2 anos</p></div><span>→</span>
+        </div>
+      </div>
+      <button class="btn-primary mt" onclick="nextStep(3)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 3: Days & Time -->
+    <div class="quiz-step" id="step3">
+      <div class="quiz-emoji">📅</div>
+      <h2>Sua rotina de treinos</h2>
+      <p class="quiz-sub">Quantos dias por semana?</p>
+      <div class="days-selector">
+        <div class="day-btn" onclick="selectDays(this, 2)">2</div>
+        <div class="day-btn" onclick="selectDays(this, 3)">3</div>
+        <div class="day-btn" onclick="selectDays(this, 4)">4</div>
+        <div class="day-btn" onclick="selectDays(this, 5)">5</div>
+        <div class="day-btn" onclick="selectDays(this, 6)">6</div>
+      </div>
+      <p class="days-label" id="days-label">Selecione os dias</p>
+
+      <p class="quiz-sub" style="margin-top:20px">Tempo disponível por treino?</p>
+      <div class="options-grid tight">
+        <div class="option-card sm" onclick="selectOption(this, 'availableTime', '20-30 min')">
+          <span>20–30 min</span>
+        </div>
+        <div class="option-card sm" onclick="selectOption(this, 'availableTime', '30-45 min')">
+          <span>30–45 min</span>
+        </div>
+        <div class="option-card sm" onclick="selectOption(this, 'availableTime', '45-60 min')">
+          <span>45–60 min</span>
+        </div>
+        <div class="option-card sm" onclick="selectOption(this, 'availableTime', '60+ min')">
+          <span>60+ min</span>
+        </div>
+      </div>
+
+      <p class="quiz-sub" style="margin-top:16px">Seu trabalho é:</p>
+      <div class="options-col tight">
+        <div class="option-row sm" onclick="selectOption(this, 'workType', 'Sedentário (escritório)')">
+          <div><strong>Sedentário</strong><p>Trabalho de escritório / em casa</p></div><span>→</span>
+        </div>
+        <div class="option-row sm" onclick="selectOption(this, 'workType', 'Levemente ativo')">
+          <div><strong>Levemente ativo</strong><p>Ando bastante durante o dia</p></div><span>→</span>
+        </div>
+        <div class="option-row sm" onclick="selectOption(this, 'workType', 'Muito ativo (físico)')">
+          <div><strong>Muito ativo</strong><p>Trabalho físico / em pé o dia todo</p></div><span>→</span>
+        </div>
+      </div>
+      <button class="btn-primary mt" onclick="nextStep(4)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 4: Place -->
+    <div class="quiz-step" id="step4">
+      <div class="quiz-emoji">🏋️</div>
+      <h2>Onde você vai treinar?</h2>
+      <div class="options-grid">
+        <div class="option-card" onclick="selectOption(this, 'place', 'Academia completa')">
+          <span class="opt-icon">🏢</span><span>Academia</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'place', 'casa com equipamentos')">
+          <span class="opt-icon">🏠</span><span>Casa c/ equipamentos</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'place', 'casa sem equipamentos')">
+          <span class="opt-icon">🛋️</span><span>Casa sem equipamentos</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'place', 'ar livre')">
+          <span class="opt-icon">🌳</span><span>Ao ar livre</span>
+        </div>
+      </div>
+      <button class="btn-primary mt" onclick="nextStep(5)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 5: Body type -->
+    <div class="quiz-step" id="step5">
+      <div class="quiz-emoji">🧬</div>
+      <h2>Qual é seu biotipo?</h2>
+      <p class="quiz-sub">Opcional — ajuda a personalizar melhor</p>
+      <div class="options-col">
+        <div class="option-row" onclick="selectOption(this, 'bodyType', 'Ectomorfo')">
+          <div><strong>🦴 Ectomorfo</strong><p>Magro naturalmente, difícil ganhar massa</p></div><span>→</span>
+        </div>
+        <div class="option-row" onclick="selectOption(this, 'bodyType', 'Mesomorfo')">
+          <div><strong>💪 Mesomorfo</strong><p>Atlético, responde bem ao treino</p></div><span>→</span>
+        </div>
+        <div class="option-row" onclick="selectOption(this, 'bodyType', 'Endomorfo')">
+          <div><strong>⚡ Endomorfo</strong><p>Tende a acumular gordura, força natural</p></div><span>→</span>
+        </div>
+      </div>
+      <button class="btn-ghost mt" onclick="nextStep(6)" style="margin-top:8px">Pular este passo</button>
+      <button class="btn-primary" onclick="nextStep(6)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 6: Nutrition quiz -->
+    <div class="quiz-step" id="step6">
+      <div class="quiz-emoji">🍽️</div>
+      <h2>Sua alimentação hoje</h2>
+      <p class="quiz-sub">Isso ajuda a personalizar suas sugestões nutricionais</p>
+
+      <div class="food-quiz">
+        <div class="food-question">
+          <span>Você toma café da manhã?</span>
+          <div class="food-options">
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatBreakfast', 'Sim')">Sim</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatBreakfast', 'Não')">Não</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatBreakfast', 'Às vezes')">Às vezes</button>
+          </div>
+        </div>
+        <div class="food-question">
+          <span>Come ovos regularmente?</span>
+          <div class="food-options">
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatEggs', 'Sim')">Sim</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatEggs', 'Não')">Não</button>
+          </div>
+        </div>
+        <div class="food-question">
+          <span>Come arroz e feijão?</span>
+          <div class="food-options">
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatRiceAndBeans', 'Sim')">Sim</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatRiceAndBeans', 'Não')">Não</button>
+          </div>
+        </div>
+        <div class="food-question">
+          <span>Come batata-doce?</span>
+          <div class="food-options">
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatSweetPotato', 'Sim')">Sim</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatSweetPotato', 'Não')">Não</button>
+          </div>
+        </div>
+        <div class="food-question">
+          <span>Costuma comer pão?</span>
+          <div class="food-options">
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatBread', 'Sim')">Sim</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'eatBread', 'Não')">Não</button>
+          </div>
+        </div>
+        <div class="food-question">
+          <span>Quantas refeições por dia?</span>
+          <div class="food-options">
+            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '2')">2</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '3')">3</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '4')">4</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '5+')">5+</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary mt" onclick="nextStep(7)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 7: Physical test -->
+    <div class="quiz-step" id="step7">
+      <div class="quiz-emoji">🧪</div>
+      <h2>Teste físico rápido</h2>
+      <p class="quiz-sub">Isso define seu nível real e gera o treino ideal</p>
+
+      <div class="physical-test">
+        <div class="test-card">
+          <div class="test-icon">🤸</div>
+          <div class="test-name">Quantas flexões você consegue fazer seguidas?</div>
+          <div class="test-options">
+            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 0)">
+              <span class="test-opt-label">Nenhuma</span>
+              <span class="test-opt-sub">Iniciante</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 5)">
+              <span class="test-opt-label">1–5</span>
+              <span class="test-opt-sub">Básico</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 10)">
+              <span class="test-opt-label">6–14</span>
+              <span class="test-opt-sub">Intermediário</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 20)">
+              <span class="test-opt-label">15+</span>
+              <span class="test-opt-sub">Avançado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="test-result-preview" id="test-result-preview" style="display:none">
+          <div class="test-result-icon">🎯</div>
+          <div class="test-result-text" id="test-result-text">Seu nível detectado</div>
+        </div>
+      </div>
+
+      <button class="btn-primary mt" onclick="nextStep(8)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 8: Body data -->
+    <div class="quiz-step" id="step8">
+      <div class="quiz-emoji">📏</div>
+      <h2>Dados físicos</h2>
+      <div class="field-row">
+        <div class="field-group half">
+          <label>Idade</label>
+          <input type="number" id="q-age" placeholder="25" min="14" max="80">
+        </div>
+        <div class="field-group half">
+          <label>Peso (kg)</label>
+          <input type="number" id="q-weight" placeholder="70" min="30" max="200">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group half">
+          <label>Altura (cm)</label>
+          <input type="number" id="q-height" placeholder="170" min="100" max="250">
+        </div>
+        <div class="field-group half">
+          <label>Sexo</label>
+          <select id="q-gender">
+            <option value="">Selecione</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tdee-preview" id="tdee-preview" style="display:none">
+        <div class="tdee-preview-text">⚡ TDEE estimado: <strong id="tdee-preview-val">--</strong> kcal/dia</div>
+      </div>
+
+      <button class="btn-primary mt" onclick="generateWorkout()">🤖 GERAR MEU PLANO</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- GENERATING WORKOUT -->
+<div id="generating" class="screen">
+  <div class="gen-container">
+    <div class="gen-icon">🤖</div>
+    <h2>Criando seu plano personalizado</h2>
+    <div class="gen-steps">
+      <div class="gen-step" id="gs1">✓ Analisando seu perfil...</div>
+      <div class="gen-step" id="gs2">✓ Calculando seu TDEE...</div>
+      <div class="gen-step" id="gs3">✓ Definindo metas nutricionais...</div>
+      <div class="gen-step" id="gs4">✓ Selecionando exercícios...</div>
+      <div class="gen-step" id="gs5">✓ Montando progressão...</div>
+      <div class="gen-step" id="gs6">🎯 Plano pronto!</div>
+    </div>
+    <div class="gen-bar"><div class="gen-fill" id="gen-fill"></div></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="screen">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="user-info">
+      <div class="avatar" id="user-avatar">?</div>
+      <div>
+        <div class="user-name" id="user-name-display">Usuário</div>
+        <div class="user-plan" id="user-plan-display">GRÁTIS</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="streak-badge" id="streak-badge">
+        🔥 <span id="streak-count">0</span>
+      </div>
+      <button class="icon-btn" onclick="showNotif()">🔔</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab('home', this)">
+      <span class="tab-icon">🏠</span><span class="tab-label">Home</span>
+    </div>
+    <div class="tab" onclick="switchTab('workout', this)">
+      <span class="tab-icon">💪</span><span class="tab-label">Treino</span>
+    </div>
+    <div class="tab" onclick="switchTab('nutrition', this)">
+      <span class="tab-icon">🍎</span><span class="tab-label">Nutrição</span>
+    </div>
+    <div class="tab" onclick="switchTab('progress', this)">
+      <span class="tab-icon">📈</span><span class="tab-label">Progresso</span>
+    </div>
+    <div class="tab" onclick="switchTab('ranking', this)">
+      <span class="tab-icon">🏆</span><span class="tab-label">Ranking</span>
+    </div>
+  </div>
+
+  <!-- TAB CONTENT -->
+  <div class="tab-content">
+
+    <!-- HOME TAB -->
+    <div class="tab-pane active" id="tab-home">
+      <div class="home-header">
+        <h1 id="home-greeting">Bom dia! 💪</h1>
+        <p id="home-date"></p>
+      </div>
+
+      <div class="streak-card">
+        <div class="streak-left">
+          <div class="streak-fire">🔥</div>
+          <div>
+            <div class="streak-number" id="home-streak">0</div>
+            <div class="streak-label">dias seguidos</div>
+          </div>
+        </div>
+        <div class="streak-right">
+          <div class="streak-week" id="streak-week"></div>
+          <div class="streak-tip">Continue a sequência!</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h3>Treino de hoje</h3>
+        <span class="badge-today" id="today-type">-</span>
+      </div>
+      <div class="today-card" onclick="switchTab('workout', document.querySelector('.tab:nth-child(2)'))">
+        <div class="today-info">
+          <div class="today-stat"><span id="today-exercises">0</span><label>Exercícios</label></div>
+          <div class="today-stat"><span id="today-duration">0min</span><label>Duração est.</label></div>
+          <div class="today-stat"><span id="today-kcal">0</span><label>Kcal est.</label></div>
+        </div>
+        <button class="btn-start">INICIAR TREINO →</button>
+      </div>
+
+      <!-- Quick nutrition summary on home -->
+      <div class="section-header">
+        <h3>Nutrição hoje</h3>
+        <span class="btn-sm" onclick="switchTab('nutrition', document.querySelectorAll('.tab')[2])" style="cursor:pointer">Ver tudo →</span>
+      </div>
+      <div class="home-nutrition-mini" id="home-nutrition-mini">
+        <div class="mini-macro">🥩 <span id="mini-protein">0</span>g proteína</div>
+        <div class="mini-macro">🍚 <span id="mini-carbs">0</span>g carb</div>
+        <div class="mini-macro">⚡ <span id="mini-cal">0</span> kcal</div>
+      </div>
+
+      <div class="section-header"><h3>Sua semana</h3></div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val" id="week-workouts">0</div><div class="stat-lbl">Treinos</div></div>
+        <div class="stat-box"><div class="stat-val" id="week-minutes">0</div><div class="stat-lbl">Minutos</div></div>
+        <div class="stat-box"><div class="stat-val" id="week-kcal">0</div><div class="stat-lbl">Kcal</div></div>
+        <div class="stat-box"><div class="stat-val" id="week-xp">0</div><div class="stat-lbl">XP ganho</div></div>
+      </div>
+
+      <div class="level-card">
+        <div class="level-header">
+          <span>Nível <strong id="user-level">1</strong></span>
+          <span id="user-xp">0 / 500 XP</span>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- WORKOUT TAB -->
+    <div class="tab-pane" id="tab-workout">
+      <div class="workout-header">
+        <h2>Meu Plano de Treino</h2>
+        <button class="btn-sm" onclick="regenerateWorkout()">🔄 Regerar</button>
+      </div>
+      <div class="workout-days" id="workout-days"></div>
+    </div>
+
+    <!-- NUTRITION TAB -->
+    <div class="tab-pane" id="tab-nutrition">
+      <div id="nutrition-content">
+        <div class="loading-state">🍎 Carregando nutrição...</div>
+      </div>
+    </div>
+
+    <!-- PROGRESS TAB -->
+    <div class="tab-pane" id="tab-progress">
+      <div id="progress-content">
+        <div class="loading-state">📈 Carregando progresso...</div>
+      </div>
+    </div>
+
+    <!-- RANKING TAB -->
+    <div class="tab-pane" id="tab-ranking">
+      <div class="ranking-header">
+        <h2>🏆 Ranking</h2>
+        <div class="rank-tabs">
+          <button class="rank-tab active" onclick="switchRankTab('friends', this)">Amigos</button>
+          <button class="rank-tab" onclick="switchRankTab('global', this)">Global</button>
+          <button class="rank-tab" onclick="switchRankTab('weekly', this)">Semanal</button>
+        </div>
+      </div>
+
+      <div class="my-rank-card">
+        <div class="my-rank-pos">
+          <span>#</span><span id="my-rank-num">-</span>
+        </div>
+        <div class="my-rank-info">
+          <strong>Sua posição</strong>
+          <span id="my-rank-xp">0 XP</span>
+        </div>
+        <div class="my-rank-streak">🔥 <span id="my-rank-streak">0</span></div>
+      </div>
+
+      <div id="ranking-list" class="ranking-list"></div>
+
+      <div class="add-friend-section">
+        <input type="text" id="friend-code" placeholder="Código do amigo (ex: ABC123)">
+        <button class="btn-primary" onclick="addFriend()">+ Adicionar</button>
+        <p class="your-code">Seu código: <strong id="my-friend-code">-</strong></p>
+      </div>
+
+      <!-- Challenges section at bottom of ranking -->
+      <div class="section-header" style="margin-top:24px">
+        <h3>⚔️ Desafios</h3>
+        <button class="btn-sm" onclick="showCreateChallenge()">+ Criar</button>
+      </div>
+      <div id="active-challenges"></div>
+      <div class="section-header"><h3>Convites</h3></div>
+      <div id="pending-challenges"></div>
+      <div class="section-header"><h3>Desafios Rápidos</h3></div>
+      <div class="quick-challenges" id="quick-challenges"></div>
+    </div>
+
+  </div>
+
+  <!-- Profile button (floating) -->
+  <button class="profile-fab" onclick="showProfileSheet()">👤</button>
+</div>
+
+<!-- PROFILE SHEET (slide up) -->
+<div id="profile-sheet" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>👤 Perfil</h3>
+      <button class="modal-close" onclick="closeModal('profile-sheet')">✕</button>
+    </div>
+
+    <div class="profile-hero">
+      <div class="profile-avatar" id="profile-avatar">?</div>
+      <h2 id="profile-name">-</h2>
+      <div class="profile-plan-badge" id="profile-plan">GRÁTIS</div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="pstat"><span id="p-total-workouts">0</span><label>Treinos</label></div>
+      <div class="pstat"><span id="p-streak">0</span><label>Sequência</label></div>
+      <div class="pstat"><span id="p-total-xp">0</span><label>XP Total</label></div>
+      <div class="pstat"><span id="p-level">1</span><label>Nível</label></div>
+    </div>
+
+    <div class="upgrade-banner" id="upgrade-banner">
+      <div class="upgrade-text">
+        <strong>🚀 Upgrade para PRO</strong>
+        <p>Treinos com IA, desafios ilimitados e mais</p>
+      </div>
+      <button class="btn-upgrade" onclick="showUpgrade()">R$ 29/mês</button>
+    </div>
+
+    <div class="profile-menu">
+      <div class="menu-item" onclick="showEditProfile()"><span>✏️ Editar perfil</span><span>›</span></div>
+      <div class="menu-item" onclick="showWorkoutSettings()"><span>⚙️ Reconfigurar treino</span><span>›</span></div>
+      <div class="menu-item" onclick="showPayment()"><span>💳 Gerenciar plano</span><span>›</span></div>
+      <div class="menu-item" onclick="shareProfile()"><span>📤 Compartilhar perfil</span><span>›</span></div>
+      <div class="menu-item danger" onclick="logout()"><span>🚪 Sair</span><span>›</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+
+<!-- Add Food Modal -->
+<div id="modal-food" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🍽️ Adicionar alimento</h3>
+      <button class="modal-close" onclick="closeModal('modal-food')">✕</button>
+    </div>
+    <div class="field-group">
+      <label>Nome do alimento</label>
+      <input type="text" id="food-name" placeholder="Ex: Frango grelhado">
+    </div>
+    <div class="field-row">
+      <div class="field-group half">
+        <label>Calorias (kcal)</label>
+        <input type="number" id="food-calories" placeholder="200">
+      </div>
+      <div class="field-group half">
+        <label>Proteína (g)</label>
+        <input type="number" id="food-protein" placeholder="30">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group half">
+        <label>Carboidrato (g)</label>
+        <input type="number" id="food-carbs" placeholder="10">
+      </div>
+      <div class="field-group half">
+        <label>Gordura (g)</label>
+        <input type="number" id="food-fat" placeholder="5">
+      </div>
+    </div>
+    <button class="btn-primary" onclick="addFood()">REGISTRAR →</button>
+  </div>
+</div>
+
+<!-- Log Weight Modal -->
+<div id="modal-weight" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>⚖️ Registrar peso</h3>
+      <button class="modal-close" onclick="closeModal('modal-weight')">✕</button>
+    </div>
+    <div class="field-group">
+      <label>Peso atual (kg)</label>
+      <input type="number" id="log-weight" placeholder="70.5" step="0.1">
+    </div>
+    <div class="field-group">
+      <label>Observação (opcional)</label>
+      <input type="text" id="log-weight-note" placeholder="Ex: Após treino">
+    </div>
+    <button class="btn-primary" onclick="logWeight()">SALVAR →</button>
+  </div>
+</div>
+
+<!-- Create Challenge Modal -->
+<div id="modal-challenge" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>⚔️ Criar Desafio</h3>
+      <button class="modal-close" onclick="closeModal('modal-challenge')">✕</button>
+    </div>
+    <div class="field-group">
+      <label>Tipo de desafio</label>
+      <select id="chall-type">
+        <option value="workouts">Mais treinos em X dias</option>
+        <option value="streak">Maior sequência</option>
+        <option value="xp">Mais XP acumulado</option>
+        <option value="exercises">Mais exercícios completos</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Duração</label>
+      <select id="chall-duration">
+        <option value="7">7 dias</option>
+        <option value="14">14 dias</option>
+        <option value="30">30 dias</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Convidar amigo (código)</label>
+      <input type="text" id="chall-friend" placeholder="ABC123">
+    </div>
+    <div class="field-group">
+      <label>Aposta (opcional)</label>
+      <input type="text" id="chall-bet" placeholder="Ex: Paga o almoço 😄">
+    </div>
+    <button class="btn-primary" onclick="createChallenge()">DESAFIAR →</button>
+  </div>
+</div>
+
+<!-- Upgrade Modal -->
+<div id="modal-upgrade" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🚀 Upgrade seu plano</h3>
+      <button class="modal-close" onclick="closeModal('modal-upgrade')">✕</button>
+    </div>
+    <div class="plans-compare">
+      <div class="compare-plan">
+        <div class="cp-name">PRO</div>
+        <div class="cp-price">R$ 29<span>/mês</span></div>
+        <ul class="cp-features">
+          <li>✓ Treinos com IA ilimitados</li>
+          <li>✓ Nutrição personalizada</li>
+          <li>✓ Ranking + Desafios</li>
+          <li>✓ Histórico completo</li>
+          <li>✓ Sem anúncios</li>
+        </ul>
+        <button class="btn-primary" onclick="subscribe('pro')">ASSINAR PRO</button>
+      </div>
+      <div class="compare-plan elite">
+        <div class="cp-badge">MELHOR</div>
+        <div class="cp-name">ELITE</div>
+        <div class="cp-price">R$ 59<span>/mês</span></div>
+        <ul class="cp-features">
+          <li>✓ Tudo do PRO</li>
+          <li>✓ Coaching personalizado</li>
+          <li>✓ Plano nutricional IA</li>
+          <li>✓ Análise de progresso</li>
+          <li>✓ Suporte prioritário</li>
+        </ul>
+        <button class="btn-primary elite-btn" onclick="subscribe('elite')">ASSINAR ELITE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Workout Session Modal -->
+<div id="modal-session" class="modal hidden">
+  <div class="modal-content session-modal">
+    <div class="session-header">
+      <div>
+        <h3 id="session-name">Treino A</h3>
+        <div class="session-timer" id="session-timer">00:00</div>
+      </div>
+      <button class="btn-end" onclick="endSession()">✓ Finalizar</button>
+    </div>
+    <div id="session-exercises" class="session-exercises"></div>
+    <div class="session-footer">
+      <div class="session-stat"><span id="s-done">0</span><label>Feitos</label></div>
+      <div class="session-stat"><span id="s-total">0</span><label>Total</label></div>
+      <div class="session-stat"><span id="s-xp">+0</span><label>XP</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- Confetti Canvas -->
+<canvas id="confetti-canvas" style="position:fixed;top:0;left:0;pointer-events:none;z-index:9999;width:100%;height:100%"></canvas>
+
+<script src="app.js"></script>
+<script>
+// Extra onboarding helpers
+function selectTestOption(el, key, value) {
+  el.closest('.test-options').querySelectorAll('.test-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.quizData[key] = value;
+
+  // Show result preview
+  const preview = document.getElementById('test-result-preview');
+  const text = document.getElementById('test-result-text');
+  preview.style.display = 'flex';
+  if (value === 0) text.textContent = '🌱 Iniciante — treino adaptado para você!';
+  else if (value <= 5) text.textContent = '📈 Básico — progressão gradual';
+  else if (value <= 14) text.textContent = '💪 Intermediário — treino desafiador';
+  else text.textContent = '🔥 Avançado — exercícios difíceis desbloqueados!';
+}
+
+function showProfileSheet() {
+  renderProfile();
+  document.getElementById('profile-sheet').classList.remove('hidden');
+}
+
+// Live TDEE preview on step 8
+document.addEventListener('input', e => {
+  if (['q-age','q-weight','q-height'].includes(e.target.id)) {
+    const age = +document.getElementById('q-age').value;
+    const weight = +document.getElementById('q-weight').value;
+    const height = +document.getElementById('q-height').value;
+    if (age && weight && height) {
+      const bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+      const tdee = Math.round(bmr * 1.375);
+      document.getElementById('tdee-preview').style.display = 'block';
+      document.getElementById('tdee-preview-val').textContent = tdee;
+    }
+  }
+});
+
+// Update home nutrition mini on tab switch
+const origSwitchTab = switchTab;
+window.switchTab = function(tab, el) {
+  origSwitchTab(tab, el);
+  if (tab === 'home') updateHomeMiniNutrition();
+};
+
+function updateHomeMiniNutrition() {
+  const u = state.currentUser;
+  if (!u) return;
+  const today = new Date().toDateString();
+  const todayLog = (u.nutritionLog || []).filter(e => new Date(e.date).toDateString() === today);
+  const protein = todayLog.reduce((s, e) => s + (e.protein || 0), 0);
+  const carbs = todayLog.reduce((s, e) => s + (e.carbs || 0), 0);
+  const cal = todayLog.reduce((s, e) => s + (e.calories || 0), 0);
+  const p = document.getElementById('mini-protein');
+  const c = document.getElementById('mini-carbs');
+  const k = document.getElementById('mini-cal');
+  if (p) p.textContent = protein;
+  if (c) c.textContent = carbs;
+  if (k) k.textContent = cal;
+}
+</script>
+</body>
+</html>
