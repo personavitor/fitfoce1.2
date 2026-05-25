@@ -2,6 +2,15 @@
 //  FITFORCE – APP ENGINE v2.0
 // ═══════════════════════════════════════════
 
+// ── SUPABASE CONFIG ─────────────────────────
+// ⚠️  Substitua pelos seus dados em:
+//     https://app.supabase.com → seu projeto → Settings → API
+const SUPABASE_URL = 'https://tbqmsevphrsjnftiotsb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Wlfm0MR1he4FONCi50ltdg_xlp4U1sa';
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // ── STATE ──────────────────────────────────
 let state = {
   currentUser: null,
@@ -9,14 +18,17 @@ let state = {
   currentTab: 'home',
   selectedPlan: 'free',
   quizData: {
-    goal: null, level: null, days: 3, place: null,
+    name: null, goal: null, level: null, days: 3, place: null,
     age: null, weight: null, height: null, gender: null,
     bodyType: null, workType: null, availableTime: null,
+    planIntensity: null, equipment: [],
+    hasInjury: null, injuryDetail: null,
     // Nutrition quiz
     eatBreakfast: null, eatBread: null, eatEggs: null,
     eatRiceAndBeans: null, eatSweetPotato: null, mealsPerDay: null,
+    foodChallenge: null, foodRestriction: null, foodBudget: null,
     // Physical test
-    pushupCount: null
+    pushupCount: null, squatCount: null, plankTime: null
   },
   workoutPlan: null,
   activeSession: null,
@@ -305,27 +317,74 @@ function getCalisthenicsWorkout(user) {
 }
 
 // ── AUTH ────────────────────────────────────
-function handleLogin() {
+async function handleLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pwd = document.getElementById('login-password').value;
   if (!email || !pwd) { showToast('⚠️ Preencha todos os campos'); return; }
 
-  const user = Object.values(state.users).find(u => u.email === email && u.password === pwd);
-  if (!user) { showToast('❌ E-mail ou senha incorretos'); return; }
+  const btn = document.querySelector('#login-form .btn-primary');
+  btn.textContent = 'Entrando...'; btn.disabled = true;
 
-  loginUser(user);
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pwd });
+  btn.textContent = 'ENTRAR'; btn.disabled = false;
+
+  if (error) {
+    if (error.message.includes('Email not confirmed')) {
+      showToast('📧 Confirme seu e-mail — ou desative isso no Supabase (Auth → Settings)');
+    } else if (error.message.includes('Invalid')) {
+      showToast('❌ E-mail ou senha incorretos');
+    } else {
+      showToast('❌ ' + error.message);
+    }
+    return;
+  }
+
+  const hasData = await loadData();
+  if (hasData && state.currentUser) {
+    if (state.currentUser.workoutPlan) {
+      state.workoutPlan = state.currentUser.workoutPlan;
+      launchApp();
+    } else {
+      showScreen('onboarding');
+    }
+  }
 }
 
-function handleRegister() {
+async function handleRegister() {
   const name = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const pwd = document.getElementById('reg-password').value;
   if (!name || !email || !pwd) { showToast('⚠️ Preencha todos os campos'); return; }
   if (pwd.length < 8) { showToast('⚠️ Senha deve ter 8+ caracteres'); return; }
 
+  const btn = document.querySelector('#register-form .btn-primary');
+  btn.textContent = 'Criando conta...'; btn.disabled = true;
+
+  const { data, error } = await db.auth.signUp({
+    email, password: pwd,
+    options: { data: { name } }
+  });
+  btn.textContent = 'CRIAR CONTA →'; btn.disabled = false;
+
+  if (error) { showToast('❌ ' + error.message); return; }
+  if (!data.user) { showToast('❌ Erro ao criar conta'); return; }
+
+  // Aguarda o trigger do Supabase criar o perfil antes de continuar
+  await new Promise(r => setTimeout(r, 1000));
+
+  // Atualiza o perfil com nome e plano (o trigger pode não ter o nome ainda)
+  await db.from('profiles').upsert({
+    id: data.user.id,
+    name,
+    plan: state.selectedPlan,
+    friend_code: Math.random().toString(36).substr(2, 6).toUpperCase(),
+  }, { onConflict: 'id' });
+
+  // Monta o usuário localmente sem precisar do loadData (evita erro de email não confirmado)
   const newUser = {
-    id: 'u' + Date.now(),
-    name, email, password: pwd,
+    id: data.user.id,
+    name,
+    email,
     plan: state.selectedPlan,
     xp: 0, level: 1, streak: 0, maxStreak: 0,
     totalWorkouts: 0, totalMinutes: 0,
@@ -335,19 +394,20 @@ function handleRegister() {
     workoutHistory: [],
     nutritionLog: [],
     progressLog: [],
-    createdAt: Date.now(),
     workoutDays: new Set(),
     quizData: {},
     tdee: null,
     macros: null,
     calisthenicsLevel: 1,
+    isCalisthenics: false,
+    workoutPlan: null,
   };
 
   seedDemoFriends(newUser);
-
   state.users[newUser.id] = newUser;
-  saveData();
   state.currentUser = newUser;
+
+  showToast('✅ Conta criada!');
   showScreen('onboarding');
 }
 
@@ -382,8 +442,10 @@ function loginUser(user) {
   }
 }
 
-function logout() {
+async function logout() {
+  await db.auth.signOut();
   state.currentUser = null;
+  state.users = {};
   showScreen('auth');
   showToast('👋 Até logo!');
 }
@@ -442,6 +504,8 @@ function generateWorkout() {
   const height = document.getElementById('q-height').value;
   const gender = document.getElementById('q-gender').value;
   if (!age || !weight || !height || !gender) { showToast('⚠️ Preencha seus dados físicos'); return; }
+  // Save name if provided
+  if (state.quizData.name && state.currentUser) state.currentUser.name = state.quizData.name;
   state.quizData = { ...state.quizData, age: +age, weight: +weight, height: +height, gender };
   showScreen('generating');
   runGenerationAnimation();
@@ -761,6 +825,16 @@ function endSession() {
   state.currentUser.totalWorkouts = (state.currentUser.totalWorkouts || 0) + 1;
   state.currentUser.totalMinutes = (state.currentUser.totalMinutes || 0) + minutes;
 
+  // Persiste treino no Supabase
+  db.from('workout_history').insert({
+    user_id: state.currentUser.id,
+    name: plan.name,
+    minutes,
+    kcal: plan.kcal,
+    xp,
+    exercises: sessionDoneCount,
+  }).then(({ error }) => { if (error) console.warn('workout_history insert:', error.message); });
+
   state.currentUser.xp = (state.currentUser.xp || 0) + xp;
   const newLevel = Math.floor(state.currentUser.xp / 500) + 1;
   const leveledUp = newLevel > state.currentUser.level;
@@ -950,8 +1024,19 @@ function addFood() {
 
   if (!name) { showToast('⚠️ Digite o nome do alimento'); return; }
 
+  const entry = { name, calories, protein, carbs, fat, date: Date.now() };
   state.currentUser.nutritionLog = state.currentUser.nutritionLog || [];
-  state.currentUser.nutritionLog.push({ name, calories, protein, carbs, fat, date: Date.now() });
+  state.currentUser.nutritionLog.push(entry);
+
+  // Persiste no Supabase
+  db.from('nutrition_log').insert({
+    user_id: state.currentUser.id,
+    food_name: name,
+    calories, protein, carbs, fat,
+  }).then(({ data: rows, error }) => {
+    if (error) console.warn('nutrition_log insert:', error.message);
+    else if (rows && rows[0]) entry.id = rows[0].id;
+  });
 
   saveData();
   closeModal('modal-food');
@@ -973,6 +1058,10 @@ function deleteFoodEntry(idx) {
   const entry = todayEntries[idx];
   if (entry !== undefined) {
     state.currentUser.nutritionLog.splice(entry.originalIdx, 1);
+    if (entry.id) {
+      db.from('nutrition_log').delete().eq('id', entry.id)
+        .then(({ error }) => { if (error) console.warn('nutrition_log delete:', error.message); });
+    }
     saveData();
     renderNutrition();
   }
@@ -1169,6 +1258,12 @@ function logWeight() {
   state.currentUser.progressLog = state.currentUser.progressLog || [];
   state.currentUser.progressLog.push({ weight, note, date: Date.now() });
 
+  // Persiste no Supabase
+  db.from('progress_log').insert({
+    user_id: state.currentUser.id,
+    weight, note: note || null,
+  }).then(({ error }) => { if (error) console.warn('progress_log insert:', error.message); });
+
   // Update current weight in profile
   state.currentUser.quizData = state.currentUser.quizData || {};
   state.currentUser.quizData.weight = weight;
@@ -1247,13 +1342,27 @@ function switchRankTab(mode, el) {
   renderRanking(mode);
 }
 
-function addFriend() {
+async function addFriend() {
   const code = document.getElementById('friend-code').value.trim().toUpperCase();
   if (!code) { showToast('⚠️ Digite o código do amigo'); return; }
-  const friend = Object.values(state.users).find(u => u.friendCode === code && u.id !== state.currentUser.id);
+
+  // Busca no Supabase pelo código de amigo
+  let friend = Object.values(state.users).find(u => u.friendCode === code && u.id !== state.currentUser.id);
+  if (!friend) {
+    const { data: fp } = await db.from('profiles').select('id, name, xp, level, streak, plan, friend_code').eq('friend_code', code).single();
+    if (fp && fp.id !== state.currentUser.id) {
+      friend = { id: fp.id, name: fp.name, xp: fp.xp, level: fp.level, streak: fp.streak, plan: fp.plan, friendCode: fp.friend_code, friends: [], challenges: [], workoutHistory: [], workoutDays: new Set() };
+      state.users[fp.id] = friend;
+    }
+  }
   if (!friend) { showToast('❌ Código não encontrado'); return; }
   if (state.currentUser.friends.includes(friend.id)) { showToast('👥 Já são amigos!'); return; }
   state.currentUser.friends.push(friend.id);
+
+  // Persiste amizade no Supabase
+  db.from('friends').insert({ user_id: state.currentUser.id, friend_id: friend.id })
+    .then(({ error }) => { if (error && !error.message.includes('unique')) console.warn('friends insert:', error.message); });
+
   saveData();
   document.getElementById('friend-code').value = '';
   showToast(`✅ ${friend.name} adicionado!`);
@@ -1399,9 +1508,9 @@ function renderProfile() {
 }
 
 function showUpgrade() { document.getElementById('modal-upgrade').classList.remove('hidden'); }
-function subscribe(plan) {
+async function subscribe(plan) {
   state.currentUser.plan = plan;
-  saveData();
+  await saveData();
   closeModal('modal-upgrade');
   updateUI();
   showToast(`🚀 Bem-vindo ao plano ${plan.toUpperCase()}!`);
@@ -1501,45 +1610,199 @@ function updateStreakCheck() {
   if (daysSince > 1 && u.streak > 0) { u.streak = 0; saveData(); updateUI(); }
 }
 
-// ── PERSISTENCE ─────────────────────────────
-function saveData() {
+// ── PERSISTENCE (Supabase) ───────────────────
+
+/** Salva/atualiza o perfil principal do usuário no Supabase */
+async function saveData() {
+  const u = state.currentUser;
+  if (!u || !u.id) return;
   try {
-    const toSave = {
-      users: JSON.parse(JSON.stringify(state.users, (k, v) => v instanceof Set ? [...v] : v)),
-      currentUserId: state.currentUser?.id
-    };
-    localStorage.setItem('fitforce_data', JSON.stringify(toSave));
-  } catch (e) { console.warn('Save failed:', e); }
+    const { error } = await db.from('profiles').upsert({
+      id: u.id,
+      name: u.name,
+      plan: u.plan,
+      xp: u.xp || 0,
+      level: u.level || 1,
+      streak: u.streak || 0,
+      max_streak: u.maxStreak || 0,
+      total_workouts: u.totalWorkouts || 0,
+      total_minutes: u.totalMinutes || 0,
+      last_workout: u.lastWorkout ? new Date(u.lastWorkout).toISOString() : null,
+      friend_code: u.friendCode,
+      tdee: u.tdee || null,
+      macros: u.macros || null,
+      quiz_data: u.quizData || null,
+      workout_plan: u.workoutPlan
+        ? JSON.parse(JSON.stringify(u.workoutPlan, (k, v) => v instanceof Set ? [...v] : v))
+        : null,
+      is_calisthenics: u.isCalisthenics || false,
+      calisthenics_level: u.calisthenicsLevel || 1,
+    }, { onConflict: 'id' });
+    if (error) console.warn('saveData error:', error.message);
+  } catch (e) { console.warn('saveData exception:', e); }
 }
 
-function loadData() {
+/** Carrega perfil + logs do usuário autenticado */
+async function loadData() {
   try {
-    const raw = localStorage.getItem('fitforce_data');
-    if (!raw) return false;
-    const data = JSON.parse(raw);
-    state.users = data.users || {};
-    Object.values(state.users).forEach(u => {
-      if (Array.isArray(u.workoutDays)) u.workoutDays = new Set(u.workoutDays);
-      u.nutritionLog = u.nutritionLog || [];
-      u.progressLog = u.progressLog || [];
-    });
-    if (data.currentUserId && state.users[data.currentUserId]) {
-      state.currentUser = state.users[data.currentUserId];
-      return true;
+    const { data: { user: authUser } } = await db.auth.getUser();
+    if (!authUser) return false;
+
+    // Perfil
+    const { data: profile, error: pErr } = await db
+      .from('profiles')
+      .select('*')
+      .eq('id', authUser.id)
+      .single();
+    if (pErr || !profile) return false;
+
+    // Histórico de treinos
+    const { data: workoutHistory } = await db
+      .from('workout_history')
+      .select('*')
+      .eq('user_id', authUser.id)
+      .order('logged_at', { ascending: true });
+
+    // Log de nutrição
+    const { data: nutritionLog } = await db
+      .from('nutrition_log')
+      .select('*')
+      .eq('user_id', authUser.id)
+      .order('logged_at', { ascending: true });
+
+    // Log de progresso/peso
+    const { data: progressLog } = await db
+      .from('progress_log')
+      .select('*')
+      .eq('user_id', authUser.id)
+      .order('logged_at', { ascending: true });
+
+    // Amigos
+    const { data: friendRows } = await db
+      .from('friends')
+      .select('friend_id')
+      .eq('user_id', authUser.id);
+
+    const friendIds = (friendRows || []).map(r => r.friend_id);
+    let friendProfiles = [];
+    if (friendIds.length > 0) {
+      const { data: fps } = await db
+        .from('profiles')
+        .select('id, name, xp, level, streak, plan, friend_code')
+        .in('id', friendIds);
+      friendProfiles = fps || [];
     }
-  } catch (e) { console.warn('Load failed:', e); }
-  return false;
+
+    // Desafios
+    const { data: challenges } = await db
+      .from('challenges')
+      .select('*, challenger:profiles!challenges_challenger_id_fkey(name), challenged:profiles!challenges_challenged_id_fkey(name)')
+      .or(`challenger_id.eq.${authUser.id},challenged_id.eq.${authUser.id}`)
+      .neq('status', 'finished');
+
+    // Montar objeto de usuário
+    const mappedUser = {
+      id: profile.id,
+      name: profile.name,
+      email: authUser.email,
+      plan: profile.plan,
+      xp: profile.xp,
+      level: profile.level,
+      streak: profile.streak,
+      maxStreak: profile.max_streak,
+      totalWorkouts: profile.total_workouts,
+      totalMinutes: profile.total_minutes,
+      lastWorkout: profile.last_workout ? new Date(profile.last_workout).getTime() : null,
+      friendCode: profile.friend_code,
+      tdee: profile.tdee,
+      macros: profile.macros,
+      quizData: profile.quiz_data || {},
+      workoutPlan: profile.workout_plan || null,
+      isCalisthenics: profile.is_calisthenics,
+      calisthenicsLevel: profile.calisthenics_level,
+      workoutDays: new Set(),
+      workoutHistory: (workoutHistory || []).map(w => ({
+        id: w.id,
+        date: new Date(w.logged_at).getTime(),
+        name: w.name,
+        minutes: w.minutes,
+        kcal: w.kcal,
+        xp: w.xp,
+        exercises: w.exercises,
+      })),
+      nutritionLog: (nutritionLog || []).map(n => ({
+        id: n.id,
+        name: n.food_name,
+        calories: n.calories,
+        protein: parseFloat(n.protein),
+        carbs: parseFloat(n.carbs),
+        fat: parseFloat(n.fat),
+        meal: n.meal,
+        date: new Date(n.logged_at).getTime(),
+      })),
+      progressLog: (progressLog || []).map(p => ({
+        id: p.id,
+        weight: parseFloat(p.weight),
+        note: p.note,
+        date: new Date(p.logged_at).getTime(),
+      })),
+      friends: friendIds,
+      challenges: (challenges || []).map(c => {
+        const iAmChallenger = c.challenger_id === authUser.id;
+        const opponentName = iAmChallenger ? c.challenged?.name : c.challenger?.name;
+        const daysLeft = Math.max(0, Math.ceil((new Date(c.ends_at) - Date.now()) / 86400000));
+        return {
+          id: c.id,
+          type: c.type,
+          typeLabel: c.type_label,
+          challenger: iAmChallenger ? c.challenged_id : c.challenger_id,
+          challengerName: opponentName || 'Amigo',
+          myScore: iAmChallenger ? c.challenger_score : c.challenged_score,
+          theirScore: iAmChallenger ? c.challenged_score : c.challenger_score,
+          duration: c.duration_days,
+          daysLeft,
+          status: c.status,
+          bet: c.bet || '',
+          _isChallenger: iAmChallenger,
+          _dbId: c.id,
+        };
+      }),
+    };
+
+    // Adicionar amigos ao state.users para o ranking
+    friendProfiles.forEach(fp => {
+      state.users[fp.id] = {
+        id: fp.id, name: fp.name, xp: fp.xp, level: fp.level,
+        streak: fp.streak, plan: fp.plan, friendCode: fp.friend_code,
+        email: '', friends: [], challenges: [], workoutHistory: [], workoutDays: new Set()
+      };
+    });
+
+    // Demo friends (mantém compatibilidade com ranking visual)
+    seedDemoFriends(mappedUser);
+
+    state.users[mappedUser.id] = mappedUser;
+    state.currentUser = mappedUser;
+    return true;
+  } catch (e) {
+    console.warn('loadData exception:', e);
+    return false;
+  }
 }
 
 // ── INIT ────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   showScreen('splash');
 
   const freePlan = document.querySelector('.plan-card');
   if (freePlan) freePlan.classList.add('selected');
 
-  setTimeout(() => {
-    const hasSession = loadData();
+  // Aguarda o splash e tenta restaurar sessão do Supabase
+  await new Promise(r => setTimeout(r, 2400));
+
+  const { data: { session } } = await db.auth.getSession();
+  if (session) {
+    const hasSession = await loadData();
     if (hasSession && state.currentUser) {
       if (state.currentUser.workoutPlan) {
         state.workoutPlan = state.currentUser.workoutPlan;
@@ -1547,10 +1810,19 @@ window.addEventListener('DOMContentLoaded', () => {
       } else {
         showScreen('onboarding');
       }
-    } else {
-      showScreen('auth');
+      return;
     }
-  }, 2400);
+  }
+  showScreen('auth');
+});
+
+// Listener de mudança de autenticação
+db.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT') {
+    state.currentUser = null;
+    state.users = {};
+    showScreen('auth');
+  }
 });
 
 window.addEventListener('popstate', () => {

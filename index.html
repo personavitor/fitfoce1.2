@@ -7,6 +7,281 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<style>
+/* ── TAB ICON – size SVG icons correctly in tab bar ── */
+.tab-icon svg { display:block; }
+.tab-icon { display:flex; align-items:center; justify-content:center; }
+
+/* ── PROFILE AVATAR: pulse ring to hint it's clickable ── */
+.user-info:hover .avatar {
+  box-shadow: 0 0 0 3px rgba(229,62,62,0.5);
+  transition: box-shadow 0.2s;
+}
+
+/* ── NEW QUIZ ELEMENTS ── */
+
+/* Register trial banner */
+.register-trial-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.06));
+  border: 1px solid rgba(34,197,94,0.35);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.rtb-icon { font-size: 26px; flex-shrink: 0; }
+.rtb-text { display: flex; flex-direction: column; gap: 3px; }
+.rtb-text strong { color: #22c55e; font-size: 14px; font-weight: 700; }
+.rtb-text span { color: #888; font-size: 12px; }
+
+/* Input focus polish */
+input:focus, select:focus {
+  outline: none;
+  border-color: rgba(229,62,62,0.6) !important;
+  box-shadow: 0 0 0 3px rgba(229,62,62,0.12);
+  transition: all 0.2s;
+}
+
+/* Password strength indicator */
+.pwd-strength-bar {
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 6px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+.pwd-strength-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s, background 0.3s;
+  width: 0%;
+}
+.imc-live-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-top: 12px;
+}
+.imc-live-label { font-size: 14px; color: var(--text-secondary, #aaa); }
+.imc-live-label strong { font-size: 18px; color: #fff; }
+.imc-live-cat { font-size: 13px; font-weight: 600; margin-left: auto; }
+
+.equipment-check {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.equip-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #fff;
+  transition: all .2s;
+}
+.equip-label:hover { background: rgba(255,255,255,0.12); }
+.equip-label input { accent-color: #e53e3e; width: 16px; height: 16px; }
+
+.food-options.flex-wrap { flex-wrap: wrap; gap: 8px; }
+
+/* Trial banner in quiz */
+.trial-banner-quiz {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #1a3a1a, #0d2b0d);
+  border: 1px solid #22c55e;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  animation: trialPulse 2s ease-in-out infinite;
+}
+@keyframes trialPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+.trial-banner-icon { font-size: 28px; flex-shrink: 0; }
+.trial-banner-text { display: flex; flex-direction: column; gap: 2px; }
+.trial-banner-text strong { color: #22c55e; font-size: 14px; letter-spacing: 0.5px; }
+.trial-banner-text span { color: #aaa; font-size: 12px; }
+
+/* Trial countdown in profile */
+.trial-countdown-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.4);
+  border-radius: 20px;
+  padding: 6px 14px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #22c55e;
+  font-weight: 600;
+}
+.trial-cd-icon { font-size: 14px; }
+
+/* Trial expired modal */
+.trial-expired-modal { text-align: center; }
+.trial-exp-icon { font-size: 52px; margin-bottom: 8px; }
+.trial-exp-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.trial-exp-sub { color: #aaa; font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+
+/* Timeline block */
+.ss-timeline-block {
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 14px;
+  margin: 14px 0;
+  border-left: 3px solid #e53e3e;
+}
+.ss-timeline-title { font-size: 13px; font-weight: 700; color: #e53e3e; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.ss-timeline-list { display: flex; flex-direction: column; gap: 8px; }
+.ss-timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #ddd;
+}
+.ss-timeline-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #e53e3e;
+  flex-shrink: 0;
+}
+.ss-timeline-week { font-weight: 700; color: #fff; min-width: 70px; }
+
+/* Top bar trial pill */
+.trial-pill-topbar {
+  font-size: 10px;
+  background: rgba(34,197,94,0.2);
+  color: #22c55e;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* Trial bar on home screen */
+.trial-home-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.05));
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+.thb-left { display: flex; align-items: center; gap: 10px; }
+.thb-icon { font-size: 20px; flex-shrink: 0; }
+.thb-title { font-size: 13px; font-weight: 700; color: #22c55e; }
+.thb-sub { font-size: 11px; color: #888; margin-top: 2px; }
+.thb-btn {
+  background: rgba(34,197,94,0.2);
+  border: 1px solid rgba(34,197,94,0.4);
+  color: #22c55e;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.thb-btn:hover { background: rgba(34,197,94,0.3); }
+
+/* Trial bar expired state */
+.trial-home-bar.expired {
+  background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.05));
+  border-color: rgba(239,68,68,0.25);
+}
+.trial-home-bar.expired .thb-title { color: #ef4444; }
+.trial-home-bar.expired .thb-btn {
+  background: rgba(239,68,68,0.2);
+  border-color: rgba(239,68,68,0.4);
+  color: #ef4444;
+}
+
+/* Smart Summary Card */
+.smart-summary-card {
+  background: linear-gradient(135deg, rgba(229,62,62,0.15), rgba(0,0,0,0.3));
+  border: 1px solid rgba(229,62,62,0.3);
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 16px;
+}
+.ss-imc-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 14px;
+}
+.ss-imc-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 64px;
+}
+.ss-imc-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  color: #fff;
+  line-height: 1;
+}
+.ss-imc-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+.ss-imc-cat-block { flex: 1; }
+.ss-imc-cat { font-size: 16px; font-weight: 700; }
+.ss-imc-cat-sub { font-size: 12px; color: #bbb; margin-top: 4px; line-height: 1.4; }
+
+.ss-level-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.ss-level-badge {
+  background: rgba(229,62,62,0.2);
+  border: 1px solid rgba(229,62,62,0.4);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.ss-tdee-info { font-size: 13px; color: #aaa; }
+
+.ss-advice-list { display: flex; flex-direction: column; gap: 10px; }
+.ss-advice-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #ddd;
+  line-height: 1.5;
+}
+.ss-advice-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+</style>
 </head>
 <body>
 
@@ -41,30 +316,21 @@
         <label>Senha</label>
         <input type="password" id="login-password" placeholder="••••••••">
       </div>
-      <button class="btn-primary" onclick="handleLogin()">ENTRAR</button>
+      <button class="btn-primary" onclick="handleLogin()">ENTRAR →</button>
       <div class="auth-divider"><span>ou</span></div>
-      <button class="btn-ghost" onclick="showRegister()">CRIAR CONTA GRÁTIS</button>
+      <button class="btn-ghost" onclick="showRegister()">CRIAR CONTA GRÁTIS — 7 DIAS PRO 🎁</button>
     </div>
 
     <div id="register-form" class="auth-card hidden">
-      <h2>Criar conta</h2>
+      <h2>Criar conta grátis</h2>
       <p class="auth-subtitle">Comece sua jornada hoje</p>
 
-      <div class="plans-row">
-        <div class="plan-card" onclick="selectPlan('free', this)">
-          <div class="plan-badge">GRÁTIS</div>
-          <div class="plan-price">R$ 0</div>
-          <div class="plan-desc">Treino básico</div>
-        </div>
-        <div class="plan-card" onclick="selectPlan('pro', this)">
-          <div class="plan-badge pro">PRO</div>
-          <div class="plan-price">R$ 29<span>/mês</span></div>
-          <div class="plan-desc">IA + Ranking + Desafios</div>
-        </div>
-        <div class="plan-card" onclick="selectPlan('elite', this)">
-          <div class="plan-badge elite">ELITE</div>
-          <div class="plan-price">R$ 59<span>/mês</span></div>
-          <div class="plan-desc">Tudo + Coaching</div>
+      <!-- Trial highlight -->
+      <div class="register-trial-banner">
+        <div class="rtb-icon">🎁</div>
+        <div class="rtb-text">
+          <strong>7 dias de acesso PRO grátis</strong>
+          <span>Sem cartão de crédito. Cancele quando quiser.</span>
         </div>
       </div>
 
@@ -78,43 +344,82 @@
       </div>
       <div class="field-group">
         <label>Senha</label>
-        <input type="password" id="reg-password" placeholder="Mínimo 8 caracteres">
+        <input type="password" id="reg-password" placeholder="Mínimo 8 caracteres" oninput="checkPwdStrength(this.value)">
+        <div class="pwd-strength-bar"><div class="pwd-strength-fill" id="pwd-strength-fill"></div></div>
       </div>
-      <button class="btn-primary" onclick="handleRegister()">CRIAR CONTA →</button>
+      <button class="btn-primary" onclick="handleRegister()">COMEÇAR GRÁTIS →</button>
       <button class="btn-ghost" onclick="showLogin()">Já tenho conta</button>
     </div>
   </div>
 </div>
 
-<!-- ONBOARDING / QUIZ (8 passos) -->
+<!-- ONBOARDING / QUIZ (10 passos expandidos) -->
 <div id="onboarding" class="screen">
   <div class="onboard-header">
-    <div class="progress-steps">
-      <div class="step-dot active" id="sd1"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd2"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd3"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd4"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd5"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd6"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd7"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd8"></div>
+    <div class="progress-steps" id="progress-steps-container">
+      <!-- dots rendered by JS -->
     </div>
-    <div class="step-label" id="step-label">Passo 1 de 8</div>
+    <div class="step-label" id="step-label">Passo 1 de 10</div>
   </div>
 
   <div class="quiz-container">
 
-    <!-- Step 1: Goal -->
+    <!-- Step 1: Personal data (Nome, Idade, Sexo) -->
     <div class="quiz-step active" id="step1">
+      <div class="quiz-emoji">👤</div>
+      <h2>Vamos começar!</h2>
+      <p class="quiz-sub">Nos conte um pouco sobre você</p>
+      <div class="field-group">
+        <label>Seu nome</label>
+        <input type="text" id="q-name" placeholder="Como quer ser chamado?">
+      </div>
+      <div class="field-row">
+        <div class="field-group half">
+          <label>Idade</label>
+          <input type="number" id="q-age" placeholder="25" min="14" max="80">
+        </div>
+        <div class="field-group half">
+          <label>Sexo</label>
+          <select id="q-gender">
+            <option value="">Selecione</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary mt" onclick="goStep1to2()">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 2: Body metrics (Altura, Peso) -->
+    <div class="quiz-step" id="step2">
+      <div class="quiz-emoji">📏</div>
+      <h2>Seus dados físicos</h2>
+      <p class="quiz-sub">Usamos isso para calcular seu IMC e calorias</p>
+      <div class="field-row">
+        <div class="field-group half">
+          <label>Altura (cm)</label>
+          <input type="number" id="q-height" placeholder="170" min="100" max="250">
+        </div>
+        <div class="field-group half">
+          <label>Peso (kg)</label>
+          <input type="number" id="q-weight" placeholder="70" min="30" max="200" oninput="updateLiveIMC()">
+        </div>
+      </div>
+      <div class="tdee-preview" id="tdee-preview" style="display:none">
+        <div class="tdee-preview-text">⚡ TDEE estimado: <strong id="tdee-preview-val">--</strong> kcal/dia</div>
+      </div>
+      <div class="imc-live-preview" id="imc-live-preview" style="display:none">
+        <div class="imc-live-label">IMC calculado: <strong id="imc-live-val">--</strong></div>
+        <div class="imc-live-cat" id="imc-live-cat"></div>
+      </div>
+      <button class="btn-primary mt" onclick="nextStep(3)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 3: Goal -->
+    <div class="quiz-step" id="step3">
       <div class="quiz-emoji">🎯</div>
-      <h2>Qual é seu objetivo?</h2>
+      <h2>Qual é seu objetivo principal?</h2>
       <div class="options-grid">
         <div class="option-card" onclick="selectOption(this, 'goal', 'Perda de peso')">
           <span class="opt-icon">🔥</span><span>Emagrecer</span>
@@ -126,16 +431,17 @@
           <span class="opt-icon">🏃</span><span>Condicionamento</span>
         </div>
         <div class="option-card" onclick="selectOption(this, 'goal', 'Saúde geral')">
-          <span class="opt-icon">❤️</span><span>Manter</span>
+          <span class="opt-icon">❤️</span><span>Manter saúde</span>
         </div>
       </div>
-      <button class="btn-primary mt" onclick="nextStep(2)">PRÓXIMO →</button>
+      <button class="btn-primary mt" onclick="nextStep(4)">PRÓXIMO →</button>
     </div>
 
-    <!-- Step 2: Level -->
-    <div class="quiz-step" id="step2">
+    <!-- Step 4: Level + plan intensity -->
+    <div class="quiz-step" id="step4">
       <div class="quiz-emoji">📊</div>
-      <h2>Qual seu nível de experiência?</h2>
+      <h2>Nível e intensidade</h2>
+      <p class="quiz-sub">Qual seu nível atual de experiência?</p>
       <div class="options-col">
         <div class="option-row" onclick="selectOption(this, 'level', 'Iniciante')">
           <div><strong>Iniciante</strong><p>Menos de 6 meses de treino</p></div><span>→</span>
@@ -147,14 +453,26 @@
           <div><strong>Avançado</strong><p>Mais de 2 anos</p></div><span>→</span>
         </div>
       </div>
-      <button class="btn-primary mt" onclick="nextStep(3)">PRÓXIMO →</button>
+      <p class="quiz-sub" style="margin-top:16px">Tipo de plano desejado:</p>
+      <div class="options-grid tight">
+        <div class="option-card sm" onclick="selectOption(this, 'planIntensity', 'leve')">
+          <span class="opt-icon">🌿</span><span>Leve</span>
+        </div>
+        <div class="option-card sm" onclick="selectOption(this, 'planIntensity', 'moderado')">
+          <span class="opt-icon">⚖️</span><span>Moderado</span>
+        </div>
+        <div class="option-card sm" onclick="selectOption(this, 'planIntensity', 'intenso')">
+          <span class="opt-icon">🔥</span><span>Intenso</span>
+        </div>
+      </div>
+      <button class="btn-primary mt" onclick="nextStep(5)">PRÓXIMO →</button>
     </div>
 
-    <!-- Step 3: Days & Time -->
-    <div class="quiz-step" id="step3">
+    <!-- Step 5: Schedule -->
+    <div class="quiz-step" id="step5">
       <div class="quiz-emoji">📅</div>
-      <h2>Sua rotina de treinos</h2>
-      <p class="quiz-sub">Quantos dias por semana?</p>
+      <h2>Sua agenda de treinos</h2>
+      <p class="quiz-sub">Quantos dias por semana você pode treinar?</p>
       <div class="days-selector">
         <div class="day-btn" onclick="selectDays(this, 2)">2</div>
         <div class="day-btn" onclick="selectDays(this, 3)">3</div>
@@ -164,7 +482,7 @@
       </div>
       <p class="days-label" id="days-label">Selecione os dias</p>
 
-      <p class="quiz-sub" style="margin-top:20px">Tempo disponível por treino?</p>
+      <p class="quiz-sub" style="margin-top:20px">Quanto tempo tem por treino?</p>
       <div class="options-grid tight">
         <div class="option-card sm" onclick="selectOption(this, 'availableTime', '20-30 min')">
           <span>20–30 min</span>
@@ -179,11 +497,59 @@
           <span>60+ min</span>
         </div>
       </div>
+      <button class="btn-primary mt" onclick="nextStep(6)">PRÓXIMO →</button>
+    </div>
 
+    <!-- Step 6: Where + Equipment -->
+    <div class="quiz-step" id="step6">
+      <div class="quiz-emoji">🏋️</div>
+      <h2>Local e equipamentos</h2>
+      <p class="quiz-sub">Onde você vai treinar?</p>
+      <div class="options-grid">
+        <div class="option-card" onclick="selectOption(this, 'place', 'Academia completa')">
+          <span class="opt-icon">🏢</span><span>Academia</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'place', 'casa com equipamentos')">
+          <span class="opt-icon">🏠</span><span>Casa c/ equip.</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'place', 'casa sem equipamentos')">
+          <span class="opt-icon">🛋️</span><span>Casa sem equip.</span>
+        </div>
+        <div class="option-card" onclick="selectOption(this, 'place', 'ar livre')">
+          <span class="opt-icon">🌳</span><span>Ao ar livre</span>
+        </div>
+      </div>
+      <p class="quiz-sub" style="margin-top:16px">Quais equipamentos você tem acesso?</p>
+      <div class="equipment-check" id="equipment-check">
+        <label class="equip-label"><input type="checkbox" value="Halteres" onchange="updateEquipment()"> 🏋️ Halteres</label>
+        <label class="equip-label"><input type="checkbox" value="Barra fixa" onchange="updateEquipment()"> 🔧 Barra fixa</label>
+        <label class="equip-label"><input type="checkbox" value="Elástico" onchange="updateEquipment()"> 🪢 Elástico</label>
+        <label class="equip-label"><input type="checkbox" value="Esteira" onchange="updateEquipment()"> 🏃 Esteira</label>
+        <label class="equip-label"><input type="checkbox" value="Nenhum" onchange="updateEquipment(this)"> ❌ Nenhum</label>
+      </div>
+      <button class="btn-primary mt" onclick="nextStep(7)">PRÓXIMO →</button>
+    </div>
+
+    <!-- Step 7: Injury / Limitation -->
+    <div class="quiz-step" id="step7">
+      <div class="quiz-emoji">🩺</div>
+      <h2>Dores, lesões ou limitações?</h2>
+      <p class="quiz-sub">Isso é muito importante para sua segurança</p>
+      <div class="field-group">
+        <label>Tem alguma dor, lesão ou limitação física?</label>
+        <div class="food-options" style="margin-top:8px">
+          <button class="food-btn" onclick="selectFoodOption(this, 'hasInjury', 'Não')">Não</button>
+          <button class="food-btn" onclick="selectFoodOption(this, 'hasInjury', 'Sim')">Sim</button>
+        </div>
+      </div>
+      <div class="field-group" id="injury-detail-group" style="display:none">
+        <label>Descreva sua limitação</label>
+        <input type="text" id="q-injury-detail" placeholder="Ex: Dor no joelho esquerdo, hérnia lombar...">
+      </div>
       <p class="quiz-sub" style="margin-top:16px">Seu trabalho é:</p>
       <div class="options-col tight">
         <div class="option-row sm" onclick="selectOption(this, 'workType', 'Sedentário (escritório)')">
-          <div><strong>Sedentário</strong><p>Trabalho de escritório / em casa</p></div><span>→</span>
+          <div><strong>Sedentário</strong><p>Escritório / home office</p></div><span>→</span>
         </div>
         <div class="option-row sm" onclick="selectOption(this, 'workType', 'Levemente ativo')">
           <div><strong>Levemente ativo</strong><p>Ando bastante durante o dia</p></div><span>→</span>
@@ -192,57 +558,138 @@
           <div><strong>Muito ativo</strong><p>Trabalho físico / em pé o dia todo</p></div><span>→</span>
         </div>
       </div>
-      <button class="btn-primary mt" onclick="nextStep(4)">PRÓXIMO →</button>
+      <button class="btn-primary mt" onclick="nextStep(8)">PRÓXIMO →</button>
     </div>
 
-    <!-- Step 4: Place -->
-    <div class="quiz-step" id="step4">
-      <div class="quiz-emoji">🏋️</div>
-      <h2>Onde você vai treinar?</h2>
-      <div class="options-grid">
-        <div class="option-card" onclick="selectOption(this, 'place', 'Academia completa')">
-          <span class="opt-icon">🏢</span><span>Academia</span>
+    <!-- Step 8: Physical test -->
+    <div class="quiz-step" id="step8">
+      <div class="quiz-emoji">🧪</div>
+      <h2>Teste físico rápido</h2>
+      <p class="quiz-sub">Isso define seu nível real e gera o treino ideal</p>
+
+      <div class="physical-test">
+        <div class="test-card">
+          <div class="test-icon">🤸</div>
+          <div class="test-name">Flexões seguidas</div>
+          <div class="test-options">
+            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 0)">
+              <span class="test-opt-label">Nenhuma</span>
+              <span class="test-opt-sub">Iniciante</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 5)">
+              <span class="test-opt-label">1–5</span>
+              <span class="test-opt-sub">Básico</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 10)">
+              <span class="test-opt-label">6–14</span>
+              <span class="test-opt-sub">Intermediário</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 20)">
+              <span class="test-opt-label">15+</span>
+              <span class="test-opt-sub">Avançado</span>
+            </div>
+          </div>
         </div>
-        <div class="option-card" onclick="selectOption(this, 'place', 'casa com equipamentos')">
-          <span class="opt-icon">🏠</span><span>Casa c/ equipamentos</span>
+
+        <div class="test-card" style="margin-top:12px">
+          <div class="test-icon">🦵</div>
+          <div class="test-name">Agachamentos seguidos</div>
+          <div class="test-options">
+            <div class="test-opt" onclick="selectTestOption2(this, 'squatCount', 0)">
+              <span class="test-opt-label">Nenhum</span>
+              <span class="test-opt-sub">Iniciante</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption2(this, 'squatCount', 10)">
+              <span class="test-opt-label">1–10</span>
+              <span class="test-opt-sub">Básico</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption2(this, 'squatCount', 20)">
+              <span class="test-opt-label">11–25</span>
+              <span class="test-opt-sub">Intermediário</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption2(this, 'squatCount', 40)">
+              <span class="test-opt-label">25+</span>
+              <span class="test-opt-sub">Avançado</span>
+            </div>
+          </div>
         </div>
-        <div class="option-card" onclick="selectOption(this, 'place', 'casa sem equipamentos')">
-          <span class="opt-icon">🛋️</span><span>Casa sem equipamentos</span>
+
+        <div class="test-card" style="margin-top:12px">
+          <div class="test-icon">🧘</div>
+          <div class="test-name">Tempo de prancha</div>
+          <div class="test-options">
+            <div class="test-opt" onclick="selectTestOption3(this, 'plankTime', 0)">
+              <span class="test-opt-label">&lt;15s</span>
+              <span class="test-opt-sub">Iniciante</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption3(this, 'plankTime', 20)">
+              <span class="test-opt-label">15–30s</span>
+              <span class="test-opt-sub">Básico</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption3(this, 'plankTime', 45)">
+              <span class="test-opt-label">30–60s</span>
+              <span class="test-opt-sub">Intermediário</span>
+            </div>
+            <div class="test-opt" onclick="selectTestOption3(this, 'plankTime', 90)">
+              <span class="test-opt-label">60s+</span>
+              <span class="test-opt-sub">Avançado</span>
+            </div>
+          </div>
         </div>
-        <div class="option-card" onclick="selectOption(this, 'place', 'ar livre')">
-          <span class="opt-icon">🌳</span><span>Ao ar livre</span>
+
+        <div class="test-result-preview" id="test-result-preview" style="display:none">
+          <div class="test-result-icon">🎯</div>
+          <div class="test-result-text" id="test-result-text">Seu nível detectado</div>
         </div>
       </div>
-      <button class="btn-primary mt" onclick="nextStep(5)">PRÓXIMO →</button>
+
+      <button class="btn-primary mt" onclick="nextStep(9)">PRÓXIMO →</button>
     </div>
 
-    <!-- Step 5: Body type -->
-    <div class="quiz-step" id="step5">
-      <div class="quiz-emoji">🧬</div>
-      <h2>Qual é seu biotipo?</h2>
-      <p class="quiz-sub">Opcional — ajuda a personalizar melhor</p>
-      <div class="options-col">
-        <div class="option-row" onclick="selectOption(this, 'bodyType', 'Ectomorfo')">
-          <div><strong>🦴 Ectomorfo</strong><p>Magro naturalmente, difícil ganhar massa</p></div><span>→</span>
-        </div>
-        <div class="option-row" onclick="selectOption(this, 'bodyType', 'Mesomorfo')">
-          <div><strong>💪 Mesomorfo</strong><p>Atlético, responde bem ao treino</p></div><span>→</span>
-        </div>
-        <div class="option-row" onclick="selectOption(this, 'bodyType', 'Endomorfo')">
-          <div><strong>⚡ Endomorfo</strong><p>Tende a acumular gordura, força natural</p></div><span>→</span>
-        </div>
-      </div>
-      <button class="btn-ghost mt" onclick="nextStep(6)" style="margin-top:8px">Pular este passo</button>
-      <button class="btn-primary" onclick="nextStep(6)">PRÓXIMO →</button>
-    </div>
-
-    <!-- Step 6: Nutrition quiz -->
-    <div class="quiz-step" id="step6">
+    <!-- Step 9: Nutrition deep dive -->
+    <div class="quiz-step" id="step9">
       <div class="quiz-emoji">🍽️</div>
-      <h2>Sua alimentação hoje</h2>
-      <p class="quiz-sub">Isso ajuda a personalizar suas sugestões nutricionais</p>
+      <h2>Seu perfil alimentar</h2>
+      <p class="quiz-sub">Vamos personalizar sua nutrição</p>
 
       <div class="food-quiz">
+        <div class="food-question">
+          <span>Quantas refeições faz por dia?</span>
+          <div class="food-options">
+            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '2')">2</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '3')">3</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '4')">4</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '5+')">5+</button>
+          </div>
+        </div>
+        <div class="food-question">
+          <span>Maior dificuldade na alimentação?</span>
+          <div class="food-options flex-wrap">
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodChallenge', 'Falta de tempo')">⏱ Tempo</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodChallenge', 'Comer fora de casa')">🍕 Comer fora</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodChallenge', 'Ansiedade alimentar')">😰 Ansiedade</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodChallenge', 'Falta de variedade')">🥗 Variedade</button>
+          </div>
+        </div>
+        <div class="food-question">
+          <span>Restrição alimentar?</span>
+          <div class="food-options flex-wrap">
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodRestriction', 'Nenhuma')">Nenhuma</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodRestriction', 'Vegetariano')">🥦 Vegetariano</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodRestriction', 'Vegano')">🌱 Vegano</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodRestriction', 'Sem lactose')">🥛 Sem lactose</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodRestriction', 'Sem glúten')">🌾 Sem glúten</button>
+          </div>
+        </div>
+        <div class="food-question">
+          <span>Orçamento semanal para alimentação?</span>
+          <div class="food-options">
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodBudget', 'até R$100')">até R$100</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodBudget', 'R$100–200')">R$100–200</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodBudget', 'R$200–400')">R$200–400</button>
+            <button class="food-btn" onclick="selectFoodOption(this, 'foodBudget', 'Acima de R$400')">R$400+</button>
+          </div>
+        </div>
         <div class="food-question">
           <span>Você toma café da manhã?</span>
           <div class="food-options">
@@ -272,100 +719,52 @@
             <button class="food-btn" onclick="selectFoodOption(this, 'eatSweetPotato', 'Não')">Não</button>
           </div>
         </div>
-        <div class="food-question">
-          <span>Costuma comer pão?</span>
-          <div class="food-options">
-            <button class="food-btn" onclick="selectFoodOption(this, 'eatBread', 'Sim')">Sim</button>
-            <button class="food-btn" onclick="selectFoodOption(this, 'eatBread', 'Não')">Não</button>
-          </div>
-        </div>
-        <div class="food-question">
-          <span>Quantas refeições por dia?</span>
-          <div class="food-options">
-            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '2')">2</button>
-            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '3')">3</button>
-            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '4')">4</button>
-            <button class="food-btn" onclick="selectFoodOption(this, 'mealsPerDay', '5+')">5+</button>
-          </div>
-        </div>
       </div>
-      <button class="btn-primary mt" onclick="nextStep(7)">PRÓXIMO →</button>
+      <button class="btn-primary mt" onclick="nextStep(10)">PRÓXIMO →</button>
     </div>
 
-    <!-- Step 7: Physical test -->
-    <div class="quiz-step" id="step7">
-      <div class="quiz-emoji">🧪</div>
-      <h2>Teste físico rápido</h2>
-      <p class="quiz-sub">Isso define seu nível real e gera o treino ideal</p>
+    <!-- Step 10: Smart Summary (resultado antes de gerar plano) -->
+    <div class="quiz-step" id="step10">
+      <div class="quiz-emoji">🏅</div>
+      <div id="smart-summary-content">
+        <h2 id="ss-welcome">Bem-vindo!</h2>
 
-      <div class="physical-test">
-        <div class="test-card">
-          <div class="test-icon">🤸</div>
-          <div class="test-name">Quantas flexões você consegue fazer seguidas?</div>
-          <div class="test-options">
-            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 0)">
-              <span class="test-opt-label">Nenhuma</span>
-              <span class="test-opt-sub">Iniciante</span>
-            </div>
-            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 5)">
-              <span class="test-opt-label">1–5</span>
-              <span class="test-opt-sub">Básico</span>
-            </div>
-            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 10)">
-              <span class="test-opt-label">6–14</span>
-              <span class="test-opt-sub">Intermediário</span>
-            </div>
-            <div class="test-opt" onclick="selectTestOption(this, 'pushupCount', 20)">
-              <span class="test-opt-label">15+</span>
-              <span class="test-opt-sub">Avançado</span>
-            </div>
+        <!-- 7-day trial banner -->
+        <div class="trial-banner-quiz">
+          <div class="trial-banner-icon">🎁</div>
+          <div class="trial-banner-text">
+            <strong>VOCÊ TEM 7 DIAS GRÁTIS!</strong>
+            <span>Acesso completo a todos os recursos PRO</span>
           </div>
         </div>
 
-        <div class="test-result-preview" id="test-result-preview" style="display:none">
-          <div class="test-result-icon">🎯</div>
-          <div class="test-result-text" id="test-result-text">Seu nível detectado</div>
-        </div>
-      </div>
+        <div class="smart-summary-card" id="smart-summary-card">
+          <div class="ss-imc-row">
+            <div class="ss-imc-block">
+              <div class="ss-imc-val" id="ss-imc-val">--</div>
+              <div class="ss-imc-label">Seu IMC</div>
+            </div>
+            <div class="ss-imc-cat-block">
+              <div class="ss-imc-cat" id="ss-imc-cat">--</div>
+              <div class="ss-imc-cat-sub" id="ss-imc-cat-sub"></div>
+            </div>
+          </div>
+          <div class="ss-level-row">
+            <div class="ss-level-badge" id="ss-level-badge">🌱 Iniciante</div>
+            <div class="ss-tdee-info" id="ss-tdee-info">TDEE: -- kcal/dia</div>
+          </div>
 
-      <button class="btn-primary mt" onclick="nextStep(8)">PRÓXIMO →</button>
-    </div>
+          <!-- Result timeline estimate -->
+          <div class="ss-timeline-block" id="ss-timeline-block">
+            <div class="ss-timeline-title">⏱ Previsão de resultados</div>
+            <div class="ss-timeline-list" id="ss-timeline-list"></div>
+          </div>
 
-    <!-- Step 8: Body data -->
-    <div class="quiz-step" id="step8">
-      <div class="quiz-emoji">📏</div>
-      <h2>Dados físicos</h2>
-      <div class="field-row">
-        <div class="field-group half">
-          <label>Idade</label>
-          <input type="number" id="q-age" placeholder="25" min="14" max="80">
+          <div class="ss-advice-list" id="ss-advice-list"></div>
         </div>
-        <div class="field-group half">
-          <label>Peso (kg)</label>
-          <input type="number" id="q-weight" placeholder="70" min="30" max="200">
-        </div>
+        <p class="quiz-sub" style="margin-top:12px">Tudo certo? Vamos montar seu plano personalizado!</p>
       </div>
-      <div class="field-row">
-        <div class="field-group half">
-          <label>Altura (cm)</label>
-          <input type="number" id="q-height" placeholder="170" min="100" max="250">
-        </div>
-        <div class="field-group half">
-          <label>Sexo</label>
-          <select id="q-gender">
-            <option value="">Selecione</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="tdee-preview" id="tdee-preview" style="display:none">
-        <div class="tdee-preview-text">⚡ TDEE estimado: <strong id="tdee-preview-val">--</strong> kcal/dia</div>
-      </div>
-
-      <button class="btn-primary mt" onclick="generateWorkout()">🤖 GERAR MEU PLANO</button>
+      <button class="btn-primary mt" onclick="generateWorkout()">🤖 GERAR MEU PLANO →</button>
     </div>
 
   </div>
@@ -373,10 +772,110 @@
 
 <!-- GENERATING WORKOUT -->
 <div id="generating" class="screen">
-  <div class="gen-container">
-    <div class="gen-icon">🤖</div>
-    <h2>Criando seu plano personalizado</h2>
-    <div class="gen-steps">
+  <div class="gen-container" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 24px;text-align:center;">
+
+    <!-- Animated Dumbbell SVG -->
+    <div style="margin-bottom:28px;">
+      <svg id="dumbbell-svg" viewBox="0 0 200 120" width="220" height="132" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+        <defs>
+          <linearGradient id="barGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#c0392b"/>
+            <stop offset="50%" style="stop-color:#e53e3e"/>
+            <stop offset="100%" style="stop-color:#c0392b"/>
+          </linearGradient>
+          <linearGradient id="plateGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#555"/>
+            <stop offset="40%" style="stop-color:#222"/>
+            <stop offset="100%" style="stop-color:#111"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <!-- Sweat drops -->
+          <linearGradient id="dropGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#60b8ff;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#1a7fd4;stop-opacity:0.6"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Rotating group -->
+        <g id="dumbbell-group" transform-origin="100 60" style="transform-box:fill-box;">
+          <!-- Bar -->
+          <rect x="30" y="55" width="140" height="10" rx="5" fill="url(#barGrad)" filter="url(#glow)"/>
+          <!-- Collar left -->
+          <rect x="42" y="48" width="10" height="24" rx="3" fill="#888"/>
+          <!-- Collar right -->
+          <rect x="148" y="48" width="10" height="24" rx="3" fill="#888"/>
+          <!-- Left big plate -->
+          <rect x="14" y="38" width="22" height="44" rx="6" fill="url(#plateGrad)" stroke="#444" stroke-width="1"/>
+          <rect x="18" y="42" width="14" height="36" rx="4" fill="#1a1a1a"/>
+          <!-- Left small plate -->
+          <rect x="8" y="45" width="10" height="30" rx="4" fill="url(#plateGrad)" stroke="#333" stroke-width="1"/>
+          <!-- Right big plate -->
+          <rect x="164" y="38" width="22" height="44" rx="6" fill="url(#plateGrad)" stroke="#444" stroke-width="1"/>
+          <rect x="168" y="42" width="14" height="36" rx="4" fill="#1a1a1a"/>
+          <!-- Right small plate -->
+          <rect x="182" y="45" width="10" height="30" rx="4" fill="url(#plateGrad)" stroke="#333" stroke-width="1"/>
+          <!-- Shine on bar -->
+          <rect x="30" y="55" width="140" height="3" rx="2" fill="rgba(255,255,255,0.18)"/>
+        </g>
+
+        <!-- Sweat drops (animated separately, not rotated) -->
+        <g id="sweat-drops">
+          <ellipse class="drop" cx="85" cy="20" rx="3" ry="4.5" fill="url(#dropGrad)" opacity="0">
+            <animate attributeName="cy" values="20;95" dur="1.1s" repeatCount="indefinite" begin="0s"/>
+            <animate attributeName="opacity" values="0;0.9;0" dur="1.1s" repeatCount="indefinite" begin="0s"/>
+          </ellipse>
+          <ellipse class="drop" cx="115" cy="15" rx="2.5" ry="4" fill="url(#dropGrad)" opacity="0">
+            <animate attributeName="cy" values="15;95" dur="1.3s" repeatCount="indefinite" begin="0.4s"/>
+            <animate attributeName="opacity" values="0;0.85;0" dur="1.3s" repeatCount="indefinite" begin="0.4s"/>
+          </ellipse>
+          <ellipse class="drop" cx="100" cy="10" rx="2" ry="3.5" fill="url(#dropGrad)" opacity="0">
+            <animate attributeName="cy" values="10;95" dur="0.9s" repeatCount="indefinite" begin="0.7s"/>
+            <animate attributeName="opacity" values="0;0.8;0" dur="0.9s" repeatCount="indefinite" begin="0.7s"/>
+          </ellipse>
+        </g>
+
+        <!-- Sparkles -->
+        <g fill="#e53e3e" opacity="0.7">
+          <circle cx="190" cy="30" r="2.5"><animate attributeName="opacity" values="0;1;0" dur="1.2s" repeatCount="indefinite" begin="0s"/></circle>
+          <circle cx="10"  cy="25" r="2"><animate attributeName="opacity" values="0;1;0" dur="1.4s" repeatCount="indefinite" begin="0.3s"/></circle>
+          <circle cx="195" cy="85" r="1.8"><animate attributeName="opacity" values="0;1;0" dur="1s"   repeatCount="indefinite" begin="0.6s"/></circle>
+          <circle cx="5"   cy="90" r="2.2"><animate attributeName="opacity" values="0;1;0" dur="1.6s" repeatCount="indefinite" begin="0.9s"/></circle>
+        </g>
+
+        <!-- Shadow on floor -->
+        <ellipse cx="100" cy="110" rx="55" ry="5" fill="rgba(0,0,0,0.35)">
+          <animate attributeName="rx" values="55;40;55" dur="1s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.35;0.15;0.35" dur="1s" repeatCount="indefinite"/>
+        </ellipse>
+      </svg>
+    </div>
+
+    <style>
+      @keyframes dumbbellBounce {
+        0%,100% { transform: translateY(0px) rotate(0deg); }
+        25%      { transform: translateY(-18px) rotate(-8deg); }
+        50%      { transform: translateY(0px) rotate(0deg); }
+        75%      { transform: translateY(-10px) rotate(6deg); }
+      }
+      @keyframes genPulse {
+        0%,100% { opacity:0.5; transform:scale(1); }
+        50%      { opacity:1;   transform:scale(1.04); }
+      }
+      #dumbbell-group {
+        animation: dumbbellBounce 1s ease-in-out infinite;
+        transform-origin: 100px 60px;
+      }
+      .gen-step { transition: opacity .4s, color .4s; opacity:0.35; }
+      .gen-step.active { opacity:1; color:#e53e3e; animation:genPulse .8s ease-in-out infinite; }
+    </style>
+
+    <h2 style="font-size:22px;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:0.5px;">Criando seu plano personalizado</h2>
+    <p style="color:#888;font-size:14px;margin-bottom:28px;">Aguarde um momento...</p>
+
+    <div class="gen-steps" style="width:100%;max-width:300px;margin-bottom:24px;">
       <div class="gen-step" id="gs1">✓ Analisando seu perfil...</div>
       <div class="gen-step" id="gs2">✓ Calculando seu TDEE...</div>
       <div class="gen-step" id="gs3">✓ Definindo metas nutricionais...</div>
@@ -384,7 +883,11 @@
       <div class="gen-step" id="gs5">✓ Montando progressão...</div>
       <div class="gen-step" id="gs6">🎯 Plano pronto!</div>
     </div>
-    <div class="gen-bar"><div class="gen-fill" id="gen-fill"></div></div>
+
+    <div class="gen-bar" style="width:100%;max-width:300px;">
+      <div class="gen-fill" id="gen-fill"></div>
+    </div>
+
   </div>
 </div>
 
@@ -393,37 +896,86 @@
 
   <!-- TOP BAR -->
   <div class="top-bar">
-    <div class="user-info">
-      <div class="avatar" id="user-avatar">?</div>
+    <div class="user-info" onclick="showProfileSheet()" style="cursor:pointer;" title="Ver perfil">
+      <div class="avatar" id="user-avatar" style="position:relative;">?</div>
       <div>
         <div class="user-name" id="user-name-display">Usuário</div>
         <div class="user-plan" id="user-plan-display">GRÁTIS</div>
       </div>
     </div>
     <div class="top-actions">
-      <div class="streak-badge" id="streak-badge">
-        🔥 <span id="streak-count">0</span>
+      <div class="streak-badge" id="streak-badge" style="display:flex;align-items:center;gap:4px;">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="#ff6b35" stroke="#ff6b35" stroke-width="0.5">
+          <path d="M12 2c0 0-5 5-5 10a5 5 0 0010 0c0-3-2-6-3-7-1 2-2 3-2 4a2 2 0 004 0c0-1-1-2-1-2s1 1 1 3a3 3 0 01-6 0c0-3 2-6 2-8z"/>
+        </svg>
+        <span id="streak-count">0</span>
       </div>
-      <button class="icon-btn" onclick="showNotif()">🔔</button>
+      <button class="icon-btn" onclick="showNotif()" style="display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+      </button>
     </div>
   </div>
 
   <!-- TABS -->
   <div class="tab-bar">
+    <!-- Home -->
     <div class="tab active" onclick="switchTab('home', this)">
-      <span class="tab-icon">🏠</span><span class="tab-label">Home</span>
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+      </span>
+      <span class="tab-label">Home</span>
     </div>
+    <!-- Treino -->
     <div class="tab" onclick="switchTab('workout', this)">
-      <span class="tab-icon">💪</span><span class="tab-label">Treino</span>
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="10" width="4" height="4" rx="1"/>
+          <rect x="18" y="10" width="4" height="4" rx="1"/>
+          <rect x="6" y="7" width="3" height="10" rx="1"/>
+          <rect x="15" y="7" width="3" height="10" rx="1"/>
+          <line x1="9" y1="12" x2="15" y2="12" stroke-width="2.5"/>
+        </svg>
+      </span>
+      <span class="tab-label">Treino</span>
     </div>
+    <!-- Nutrição -->
     <div class="tab" onclick="switchTab('nutrition', this)">
-      <span class="tab-icon">🍎</span><span class="tab-label">Nutrição</span>
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a5 5 0 00-5 5c0 2.4 1.4 4.5 3.5 5.5V21h3v-8.5C15.6 11.5 17 9.4 17 7a5 5 0 00-5-5z"/>
+          <path d="M10 2.3C10 2.3 8 4 8 6"/>
+        </svg>
+      </span>
+      <span class="tab-label">Nutrição</span>
     </div>
+    <!-- Progresso -->
     <div class="tab" onclick="switchTab('progress', this)">
-      <span class="tab-icon">📈</span><span class="tab-label">Progresso</span>
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 17 8 12 13 15 21 7"/>
+          <polyline points="17 7 21 7 21 11"/>
+          <line x1="3" y1="20" x2="21" y2="20"/>
+        </svg>
+      </span>
+      <span class="tab-label">Progresso</span>
     </div>
+    <!-- Ranking -->
     <div class="tab" onclick="switchTab('ranking', this)">
-      <span class="tab-icon">🏆</span><span class="tab-label">Ranking</span>
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 21h8M12 17v4"/>
+          <path d="M5 3h14l-1.5 7A5 5 0 0112 14a5 5 0 01-5.5-4L5 3z"/>
+          <path d="M5 3a2 2 0 00-2 2v1a3 3 0 003 3h.5"/>
+          <path d="M19 3a2 2 0 012 2v1a3 3 0 01-3 3h-.5"/>
+        </svg>
+      </span>
+      <span class="tab-label">Ranking</span>
     </div>
   </div>
 
@@ -439,7 +991,11 @@
 
       <div class="streak-card">
         <div class="streak-left">
-          <div class="streak-fire">🔥</div>
+          <div class="streak-fire">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="#ff6b35" stroke="#e85d25" stroke-width="0.5">
+              <path d="M12 2c0 0-5 5-5 10a5 5 0 0010 0c0-3-2-6-3-7-1 2-2 3-2 4a2 2 0 004 0c0-1-1-2-1-2s1 1 1 3a3 3 0 01-6 0c0-3 2-6 2-8z"/>
+            </svg>
+          </div>
           <div>
             <div class="streak-number" id="home-streak">0</div>
             <div class="streak-label">dias seguidos</div>
@@ -449,6 +1005,22 @@
           <div class="streak-week" id="streak-week"></div>
           <div class="streak-tip">Continue a sequência!</div>
         </div>
+      </div>
+
+      <!-- Trial status bar (shown only during trial) -->
+      <div class="trial-home-bar" id="trial-home-bar" style="display:none">
+        <div class="thb-left">
+          <span class="thb-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2h12M6 22h12M6 2v6l6 4-6 4v6M18 2v6l-6 4 6 4v6"/>
+            </svg>
+          </span>
+          <div>
+            <div class="thb-title" id="thb-title">7 dias grátis restantes</div>
+            <div class="thb-sub">Escolha um plano para continuar após o trial</div>
+          </div>
+        </div>
+        <button class="thb-btn" onclick="showUpgrade()">Ver planos</button>
       </div>
 
       <div class="section-header">
@@ -470,9 +1042,18 @@
         <span class="btn-sm" onclick="switchTab('nutrition', document.querySelectorAll('.tab')[2])" style="cursor:pointer">Ver tudo →</span>
       </div>
       <div class="home-nutrition-mini" id="home-nutrition-mini">
-        <div class="mini-macro">🥩 <span id="mini-protein">0</span>g proteína</div>
-        <div class="mini-macro">🍚 <span id="mini-carbs">0</span>g carb</div>
-        <div class="mini-macro">⚡ <span id="mini-cal">0</span> kcal</div>
+        <div class="mini-macro">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#e88" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 014 4c0 4-4 8-4 8S8 10 8 6a4 4 0 014-4z"/></svg>
+          <span id="mini-protein">0</span>g prot
+        </div>
+        <div class="mini-macro">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f4c430" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a4 4 0 018 0v2"/></svg>
+          <span id="mini-carbs">0</span>g carb
+        </div>
+        <div class="mini-macro">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span id="mini-cal">0</span> kcal
+        </div>
       </div>
 
       <div class="section-header"><h3>Sua semana</h3></div>
@@ -496,7 +1077,10 @@
     <div class="tab-pane" id="tab-workout">
       <div class="workout-header">
         <h2>Meu Plano de Treino</h2>
-        <button class="btn-sm" onclick="regenerateWorkout()">🔄 Regerar</button>
+        <button class="btn-sm" onclick="regenerateWorkout()" style="display:flex;align-items:center;gap:5px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          Regerar
+        </button>
       </div>
       <div class="workout-days" id="workout-days"></div>
     </div>
@@ -504,21 +1088,24 @@
     <!-- NUTRITION TAB -->
     <div class="tab-pane" id="tab-nutrition">
       <div id="nutrition-content">
-        <div class="loading-state">🍎 Carregando nutrição...</div>
+        <div class="loading-state">Carregando nutrição...</div>
       </div>
     </div>
 
     <!-- PROGRESS TAB -->
     <div class="tab-pane" id="tab-progress">
       <div id="progress-content">
-        <div class="loading-state">📈 Carregando progresso...</div>
+        <div class="loading-state">Carregando progresso...</div>
       </div>
     </div>
 
     <!-- RANKING TAB -->
     <div class="tab-pane" id="tab-ranking">
       <div class="ranking-header">
-        <h2>🏆 Ranking</h2>
+        <h2 style="display:flex;align-items:center;gap:8px;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4"/><path d="M5 3h14l-1.5 7A5 5 0 0112 14a5 5 0 01-5.5-4L5 3z"/><path d="M5 3a2 2 0 00-2 2v1a3 3 0 003 3h.5"/><path d="M19 3a2 2 0 012 2v1a3 3 0 01-3 3h-.5"/></svg>
+          Ranking
+        </h2>
         <div class="rank-tabs">
           <button class="rank-tab active" onclick="switchRankTab('friends', this)">Amigos</button>
           <button class="rank-tab" onclick="switchRankTab('global', this)">Global</button>
@@ -534,7 +1121,10 @@
           <strong>Sua posição</strong>
           <span id="my-rank-xp">0 XP</span>
         </div>
-        <div class="my-rank-streak">🔥 <span id="my-rank-streak">0</span></div>
+        <div class="my-rank-streak" style="display:flex;align-items:center;gap:4px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="#ff6b35"><path d="M12 2c0 0-5 5-5 10a5 5 0 0010 0c0-3-2-6-3-7-1 2-2 3-2 4a2 2 0 004 0c0-1-1-2-1-2s1 1 1 3a3 3 0 01-6 0c0-3 2-6 2-8z"/></svg>
+          <span id="my-rank-streak">0</span>
+        </div>
       </div>
 
       <div id="ranking-list" class="ranking-list"></div>
@@ -547,7 +1137,10 @@
 
       <!-- Challenges section at bottom of ranking -->
       <div class="section-header" style="margin-top:24px">
-        <h3>⚔️ Desafios</h3>
+        <h3 style="display:flex;align-items:center;gap:6px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H14v1.5c0 .83.67 1.5 1.5 1.5"/><path d="M10 9.5c0-.83-.67-1.5-1.5-1.5H3c-.83 0-1.5.67-1.5 1.5S2.17 11 3 11h5.5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H10v-1.5c0-.83-.67-1.5-1.5-1.5"/></svg>
+          Desafios
+        </h3>
         <button class="btn-sm" onclick="showCreateChallenge()">+ Criar</button>
       </div>
       <div id="active-challenges"></div>
@@ -559,15 +1152,16 @@
 
   </div>
 
-  <!-- Profile button (floating) -->
-  <button class="profile-fab" onclick="showProfileSheet()">👤</button>
 </div>
 
 <!-- PROFILE SHEET (slide up) -->
 <div id="profile-sheet" class="modal hidden">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>👤 Perfil</h3>
+      <h3 style="display:flex;align-items:center;gap:7px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Perfil
+      </h3>
       <button class="modal-close" onclick="closeModal('profile-sheet')">✕</button>
     </div>
 
@@ -575,6 +1169,12 @@
       <div class="profile-avatar" id="profile-avatar">?</div>
       <h2 id="profile-name">-</h2>
       <div class="profile-plan-badge" id="profile-plan">GRÁTIS</div>
+      <div class="trial-countdown-badge" id="trial-countdown-badge" style="display:none">
+        <span class="trial-cd-icon">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span id="trial-countdown-text">7 dias grátis restantes</span>
+      </div>
     </div>
 
     <div class="profile-stats">
@@ -586,18 +1186,46 @@
 
     <div class="upgrade-banner" id="upgrade-banner">
       <div class="upgrade-text">
-        <strong>🚀 Upgrade para PRO</strong>
+        <strong style="display:flex;align-items:center;gap:6px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.5-2 4-2 4s2.5-.5 4-2l12-12a2.83 2.83 0 00-4-4L4.5 16.5z"/><path d="M15 5l4 4"/></svg>
+          Upgrade para PRO
+        </strong>
         <p>Treinos com IA, desafios ilimitados e mais</p>
       </div>
       <button class="btn-upgrade" onclick="showUpgrade()">R$ 29/mês</button>
     </div>
 
     <div class="profile-menu">
-      <div class="menu-item" onclick="showEditProfile()"><span>✏️ Editar perfil</span><span>›</span></div>
-      <div class="menu-item" onclick="showWorkoutSettings()"><span>⚙️ Reconfigurar treino</span><span>›</span></div>
-      <div class="menu-item" onclick="showPayment()"><span>💳 Gerenciar plano</span><span>›</span></div>
-      <div class="menu-item" onclick="shareProfile()"><span>📤 Compartilhar perfil</span><span>›</span></div>
-      <div class="menu-item danger" onclick="logout()"><span>🚪 Sair</span><span>›</span></div>
+      <div class="menu-item" onclick="showEditProfile()">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Editar perfil
+        </span><span>›</span>
+      </div>
+      <div class="menu-item" onclick="showWorkoutSettings()">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Reconfigurar treino
+        </span><span>›</span>
+      </div>
+      <div class="menu-item" onclick="showPayment()">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Gerenciar plano
+        </span><span>›</span>
+      </div>
+      <div class="menu-item" onclick="shareProfile()">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Compartilhar perfil
+        </span><span>›</span>
+      </div>
+      <div class="menu-item danger" onclick="logout()">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sair
+        </span><span>›</span>
+      </div>
     </div>
   </div>
 </div>
@@ -608,7 +1236,10 @@
 <div id="modal-food" class="modal hidden">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>🍽️ Adicionar alimento</h3>
+      <h3 style="display:flex;align-items:center;gap:7px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        Adicionar alimento
+      </h3>
       <button class="modal-close" onclick="closeModal('modal-food')">✕</button>
     </div>
     <div class="field-group">
@@ -643,7 +1274,10 @@
 <div id="modal-weight" class="modal hidden">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>⚖️ Registrar peso</h3>
+      <h3 style="display:flex;align-items:center;gap:7px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Registrar peso
+      </h3>
       <button class="modal-close" onclick="closeModal('modal-weight')">✕</button>
     </div>
     <div class="field-group">
@@ -662,7 +1296,10 @@
 <div id="modal-challenge" class="modal hidden">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>⚔️ Criar Desafio</h3>
+      <h3 style="display:flex;align-items:center;gap:7px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M10 9.5c0-.83-.67-1.5-1.5-1.5H3c-.83 0-1.5.67-1.5 1.5S2.17 11 3 11h5.5c.83 0 1.5-.67 1.5-1.5z"/></svg>
+        Criar Desafio
+      </h3>
       <button class="modal-close" onclick="closeModal('modal-challenge')">✕</button>
     </div>
     <div class="field-group">
@@ -698,7 +1335,10 @@
 <div id="modal-upgrade" class="modal hidden">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>🚀 Upgrade seu plano</h3>
+      <h3 style="display:flex;align-items:center;gap:7px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.5-2 4-2 4s2.5-.5 4-2l12-12a2.83 2.83 0 00-4-4L4.5 16.5z"/><path d="M15 5l4 4"/><circle cx="20" cy="4" r="1"/></svg>
+        Upgrade seu plano
+      </h3>
       <button class="modal-close" onclick="closeModal('modal-upgrade')">✕</button>
     </div>
     <div class="plans-compare">
@@ -750,49 +1390,473 @@
   </div>
 </div>
 
+<!-- Trial Expired Modal -->
+<div id="modal-trial-expired" class="modal hidden">
+  <div class="modal-content trial-expired-modal">
+    <div class="trial-exp-icon">
+      <svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#e53e3e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <h2 class="trial-exp-title">Período de demonstração encerrado</h2>
+    <p class="trial-exp-sub">Seu teste gratuito de 7 dias chegou ao fim. Escolha um plano para continuar treinando com a FitForce!</p>
+    <div class="plans-compare">
+      <div class="compare-plan">
+        <div class="cp-name">PRO</div>
+        <div class="cp-price">R$ 29<span>/mês</span></div>
+        <ul class="cp-features">
+          <li>✓ Treinos com IA ilimitados</li>
+          <li>✓ Nutrição personalizada</li>
+          <li>✓ Ranking + Desafios</li>
+          <li>✓ Histórico completo</li>
+          <li>✓ Sem anúncios</li>
+        </ul>
+        <button class="btn-primary" onclick="subscribe('pro')">ASSINAR PRO</button>
+      </div>
+      <div class="compare-plan elite">
+        <div class="cp-badge">MELHOR</div>
+        <div class="cp-name">ELITE</div>
+        <div class="cp-price">R$ 59<span>/mês</span></div>
+        <ul class="cp-features">
+          <li>✓ Tudo do PRO</li>
+          <li>✓ Coaching personalizado</li>
+          <li>✓ Plano nutricional IA</li>
+          <li>✓ Análise de progresso</li>
+          <li>✓ Suporte prioritário</li>
+        </ul>
+        <button class="btn-primary elite-btn" onclick="subscribe('elite')">ASSINAR ELITE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast" class="toast hidden"></div>
 
 <!-- Confetti Canvas -->
 <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;pointer-events:none;z-index:9999;width:100%;height:100%"></canvas>
 
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
 <script>
-// Extra onboarding helpers
-function selectTestOption(el, key, value) {
-  el.closest('.test-options').querySelectorAll('.test-opt').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  state.quizData[key] = value;
+// ── QUIZ HELPERS ─────────────────────────────
 
-  // Show result preview
-  const preview = document.getElementById('test-result-preview');
-  const text = document.getElementById('test-result-text');
-  preview.style.display = 'flex';
-  if (value === 0) text.textContent = '🌱 Iniciante — treino adaptado para você!';
-  else if (value <= 5) text.textContent = '📈 Básico — progressão gradual';
-  else if (value <= 14) text.textContent = '💪 Intermediário — treino desafiador';
-  else text.textContent = '🔥 Avançado — exercícios difíceis desbloqueados!';
+// Step 1 → 2: save name before advancing
+function goStep1to2() {
+  const name = document.getElementById('q-name').value.trim();
+  if (!name) { showToast('⚠️ Digite seu nome'); return; }
+  state.quizData.name = name;
+  // Update the register name field if present
+  const regName = document.getElementById('reg-name');
+  if (regName && !regName.value) regName.value = name;
+  nextStep(2);
 }
 
-function showProfileSheet() {
-  renderProfile();
-  document.getElementById('profile-sheet').classList.remove('hidden');
-}
-
-// Live TDEE preview on step 8
-document.addEventListener('input', e => {
-  if (['q-age','q-weight','q-height'].includes(e.target.id)) {
-    const age = +document.getElementById('q-age').value;
-    const weight = +document.getElementById('q-weight').value;
-    const height = +document.getElementById('q-height').value;
-    if (age && weight && height) {
-      const bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+// Live IMC preview on step 2
+function updateLiveIMC() {
+  const h = +document.getElementById('q-height').value;
+  const w = +document.getElementById('q-weight').value;
+  const age = +document.getElementById('q-age').value;
+  if (h > 0 && w > 0) {
+    const imc = (w / ((h/100) ** 2)).toFixed(1);
+    const { cat, color } = getImcCategory(+imc);
+    document.getElementById('imc-live-preview').style.display = 'flex';
+    document.getElementById('imc-live-val').textContent = imc;
+    const catEl = document.getElementById('imc-live-cat');
+    catEl.textContent = cat;
+    catEl.style.color = color;
+    if (age > 0) {
+      const bmr = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * age);
       const tdee = Math.round(bmr * 1.375);
       document.getElementById('tdee-preview').style.display = 'block';
       document.getElementById('tdee-preview-val').textContent = tdee;
     }
   }
+}
+
+document.addEventListener('input', e => {
+  if (['q-age','q-weight','q-height'].includes(e.target.id)) updateLiveIMC();
 });
+
+function getImcCategory(imc) {
+  if (imc < 18.5) return { cat: 'Abaixo do peso', color: '#3b82f6' };
+  if (imc < 25)   return { cat: 'Peso normal ✓', color: '#22c55e' };
+  if (imc < 30)   return { cat: 'Sobrepeso', color: '#f59e0b' };
+  if (imc < 35)   return { cat: 'Obesidade grau I', color: '#f97316' };
+  return           { cat: 'Obesidade grau II+', color: '#ef4444' };
+}
+
+// Physical test selections (separate functions per test so they don't interfere)
+function selectTestOption(el, key, value) {
+  el.closest('.test-options').querySelectorAll('.test-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.quizData[key] = value;
+  updateTestPreview();
+}
+function selectTestOption2(el, key, value) {
+  el.closest('.test-options').querySelectorAll('.test-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.quizData[key] = value;
+  updateTestPreview();
+}
+function selectTestOption3(el, key, value) {
+  el.closest('.test-options').querySelectorAll('.test-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.quizData[key] = value;
+  updateTestPreview();
+}
+
+function updateTestPreview() {
+  const p = state.quizData.pushupCount;
+  const s = state.quizData.squatCount;
+  const pl = state.quizData.plankTime;
+  if (p === undefined && s === undefined && pl === undefined) return;
+  const avg = ((p||0) + (s||0) + (pl||0)) / 3;
+  const preview = document.getElementById('test-result-preview');
+  const text = document.getElementById('test-result-text');
+  preview.style.display = 'flex';
+  if (avg === 0) text.textContent = '🌱 Iniciante — treino totalmente adaptado para você!';
+  else if (avg <= 8) text.textContent = '📈 Básico — progressão gradual e consistente';
+  else if (avg <= 20) text.textContent = '💪 Intermediário — treino desafiador te espera!';
+  else text.textContent = '🔥 Avançado — exercícios pesados desbloqueados!';
+}
+
+// Equipment checkbox handler
+function updateEquipment() {
+  const checkboxes = document.querySelectorAll('#equipment-check input[type=checkbox]');
+  const nenhum = document.querySelector('#equipment-check input[value="Nenhum"]');
+  const selected = [];
+  checkboxes.forEach(cb => {
+    if (cb.value !== 'Nenhum' && cb.checked && nenhum && !nenhum.checked) selected.push(cb.value);
+  });
+  if (nenhum && nenhum.checked) {
+    checkboxes.forEach(cb => { if (cb.value !== 'Nenhum') cb.checked = false; });
+    state.quizData.equipment = [];
+  } else {
+    state.quizData.equipment = selected;
+  }
+}
+
+// Injury toggle
+document.addEventListener('change', e => {
+  if (e.target.closest && e.target.closest('.food-options') && state.quizData.hasInjury !== undefined) {
+    const grp = document.getElementById('injury-detail-group');
+    if (grp) grp.style.display = state.quizData.hasInjury === 'Sim' ? 'block' : 'none';
+  }
+});
+
+// Override nextStep to update progress dots dynamically (10 steps now)
+const _origNextStep = nextStep;
+window.nextStep = function(step) {
+  // Save injury detail if applicable
+  if (step === 8) {
+    const det = document.getElementById('q-injury-detail');
+    if (det) state.quizData.injuryDetail = det.value;
+  }
+  // Populate smart summary on step 10
+  if (step === 10) buildSmartSummary();
+
+  document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(`step${step}`);
+  if (target) target.classList.add('active');
+
+  const totalSteps = 10;
+  // Rebuild dots for 10 steps
+  const container = document.getElementById('progress-steps-container');
+  if (container && container.children.length !== (totalSteps * 2 - 1)) {
+    container.innerHTML = '';
+    for (let i = 1; i <= totalSteps; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'step-dot' + (i === step ? ' active' : (i < step ? ' done' : ''));
+      container.appendChild(dot);
+      if (i < totalSteps) {
+        const line = document.createElement('div');
+        line.className = 'step-line';
+        container.appendChild(line);
+      }
+    }
+  } else if (container) {
+    const dots = container.querySelectorAll('.step-dot');
+    dots.forEach((d, i) => {
+      d.className = 'step-dot' + (i === step - 1 ? ' active' : (i < step - 1 ? ' done' : ''));
+    });
+  }
+  document.getElementById('step-label').textContent = `Passo ${step} de ${totalSteps}`;
+};
+
+// Build the smart summary card on step 10
+function buildSmartSummary() {
+  const q = state.quizData;
+  const name = q.name || (state.currentUser && state.currentUser.name) || 'Atleta';
+  const h = +document.getElementById('q-height').value || q.height;
+  const w = +document.getElementById('q-weight').value || q.weight;
+  const age = +document.getElementById('q-age').value || q.age;
+  const gender = document.getElementById('q-gender').value || q.gender;
+
+  // Welcome
+  document.getElementById('ss-welcome').textContent = `Bem-vindo, ${name.split(' ')[0]}! 👋`;
+
+  // IMC
+  let imcStr = '--', imcCat = '--', imcSub = '', imcNum = 0;
+  if (h && w) {
+    imcNum = w / ((h/100)**2);
+    imcStr = imcNum.toFixed(1);
+    const { cat } = getImcCategory(imcNum);
+    imcCat = cat;
+    if (imcNum < 18.5) imcSub = 'Considere aumentar calorias para ganhar massa saudável.';
+    else if (imcNum < 25) imcSub = 'Excelente! Continue com seus hábitos saudáveis.';
+    else if (imcNum < 30) imcSub = 'Um déficit calórico moderado pode te ajudar.';
+    else imcSub = 'Recomendamos começar com exercícios de baixo impacto.';
+  }
+  document.getElementById('ss-imc-val').textContent = imcStr;
+  document.getElementById('ss-imc-cat').textContent = imcCat;
+  document.getElementById('ss-imc-cat-sub').textContent = imcSub;
+
+  // Level badge
+  const p = q.pushupCount || 0, s2 = q.squatCount || 0, pl = q.plankTime || 0;
+  const avg = (p + s2 + pl) / 3;
+  let lvlLabel = '🌱 Iniciante';
+  if (avg > 20) lvlLabel = '🔥 Avançado';
+  else if (avg > 8) lvlLabel = '💪 Intermediário';
+  else if (avg > 0) lvlLabel = '📈 Básico';
+  document.getElementById('ss-level-badge').textContent = lvlLabel + ' — ' + (q.level || 'Iniciante');
+
+  // TDEE
+  let tdee = 0;
+  if (h && w && age) {
+    const bmr = gender === 'Feminino'
+      ? 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * age)
+      : 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * age);
+    tdee = Math.round(bmr * 1.375);
+    document.getElementById('ss-tdee-info').textContent = `⚡ TDEE estimado: ${tdee} kcal/dia`;
+  }
+
+  // ── RESULT TIMELINE ──────────────────────────
+  const goal = q.goal || '';
+  const days = q.days || 3;
+  const intensity = q.planIntensity || 'moderado';
+  const level = q.level || 'Iniciante';
+  const hasInjury = q.hasInjury === 'Sim';
+
+  // Multiplier based on intensity and days
+  let speedMult = 1;
+  if (intensity === 'intenso') speedMult = 1.3;
+  if (intensity === 'leve') speedMult = 0.75;
+  if (days >= 5) speedMult *= 1.2;
+  if (days <= 2) speedMult *= 0.8;
+  if (hasInjury) speedMult *= 0.8;
+  if (level === 'Avançado') speedMult *= 0.9;
+
+  let timeline = [];
+  if (goal === 'Perda de peso') {
+    const w1 = Math.round(2 / speedMult); const w2 = Math.round(5 / speedMult);
+    const w3 = Math.round(10 / speedMult); const w4 = Math.round(20 / speedMult);
+    timeline = [
+      { week: `Semana ${w1}–${w1+1}`, result: 'Mais energia e disposição no dia a dia' },
+      { week: `Semana ${w2}–${w2+2}`, result: 'Redução visível de medidas e -1 a -2kg' },
+      { week: `Semana ${w3}–${w3+4}`, result: 'Definição muscular inicial e roupas mais folgadas' },
+      { week: `Semana ${w4}+`, result: 'Transformação corporal significativa (-5 a -10kg)' },
+    ];
+  } else if (goal === 'Ganho de massa') {
+    const w1 = Math.round(3 / speedMult); const w2 = Math.round(6 / speedMult);
+    const w3 = Math.round(12 / speedMult);
+    timeline = [
+      { week: `Semana ${w1}–${w1+2}`, result: 'Aumento de força e resistência nos exercícios' },
+      { week: `Semana ${w2}–${w2+3}`, result: 'Ganho inicial de massa (+0,5 a 1kg de músculo)' },
+      { week: `Semana ${w3}–${w3+6}`, result: 'Hipertrofia visível e ganho de +2 a 4kg de massa' },
+      { week: `Semana ${Math.round(24/speedMult)}+`, result: 'Transformação completa do físico e força dobrada' },
+    ];
+  } else if (goal === 'Condicionamento') {
+    timeline = [
+      { week: `Semana ${Math.round(2/speedMult)}`, result: 'Melhora na respiração durante atividades' },
+      { week: `Semana ${Math.round(4/speedMult)}–${Math.round(6/speedMult)}`, result: 'Menos cansaço nas atividades do dia a dia' },
+      { week: `Semana ${Math.round(8/speedMult)}–${Math.round(10/speedMult)}`, result: 'Desempenho cardiovascular notavelmente melhor' },
+      { week: `Semana ${Math.round(16/speedMult)}+`, result: 'Condicionamento de atleta amador — muito fôlego!' },
+    ];
+  } else {
+    timeline = [
+      { week: `Semana ${Math.round(2/speedMult)}–${Math.round(3/speedMult)}`, result: 'Mais energia, sono melhor e humor elevado' },
+      { week: `Semana ${Math.round(5/speedMult)}–${Math.round(7/speedMult)}`, result: 'Corpo mais firme e postura melhorada' },
+      { week: `Semana ${Math.round(10/speedMult)}–${Math.round(14/speedMult)}`, result: 'Hábitos consolidados e resultados visíveis' },
+      { week: `Semana ${Math.round(20/speedMult)}+`, result: 'Estilo de vida saudável totalmente integrado' },
+    ];
+  }
+
+  const timelineList = document.getElementById('ss-timeline-list');
+  timelineList.innerHTML = timeline.map(t =>
+    `<div class="ss-timeline-item">
+      <div class="ss-timeline-dot"></div>
+      <span class="ss-timeline-week">${t.week}</span>
+      <span>${t.result}</span>
+    </div>`
+  ).join('');
+
+  // ── SMART ADVICE LIST ─────────────────────────
+  const advices = [];
+  if (hasInjury && q.injuryDetail) {
+    advices.push({ icon: '⚠️', text: `Lesão detectada: "${q.injuryDetail}". Seu plano evitará exercícios de alto impacto nessa região. Consulte um fisioterapeuta antes de iniciar.` });
+  }
+  if (goal === 'Perda de peso') {
+    advices.push({ icon: '🔥', text: 'Para emagrecimento, o déficit calórico é essencial. Seu cardio será priorizado no plano.' });
+  } else if (goal === 'Ganho de massa') {
+    advices.push({ icon: '💪', text: 'Para hipertrofia, você precisa de superávit calórico e proteína suficiente (1,8–2,2g/kg de peso).' });
+  }
+  if (q.mealsPerDay === '2') {
+    advices.push({ icon: '🍽️', text: 'Apenas 2 refeições/dia pode dificultar a recuperação muscular. Tente incluir mais uma refeição intermediária.' });
+  }
+  if (q.foodRestriction && q.foodRestriction !== 'Nenhuma') {
+    advices.push({ icon: '🥦', text: `Restrição ${q.foodRestriction} identificada. Seu plano nutricional vai respeitar totalmente essa restrição.` });
+  }
+  if (q.foodChallenge === 'Ansiedade alimentar') {
+    advices.push({ icon: '🧘', text: 'Ansiedade alimentar identificada. Recomendamos refeições programadas e evitar longos períodos em jejum.' });
+  }
+  if (q.foodBudget === 'até R$100') {
+    advices.push({ icon: '💰', text: 'Com orçamento limitado, seu plano alimentar priorizará alimentos acessíveis e de alto valor nutricional como ovos, frango e feijão.' });
+  }
+  if (intensity === 'intenso' && level === 'Iniciante') {
+    advices.push({ icon: '🧠', text: 'Você escolheu plano intenso sendo iniciante. Iremos progredir gradualmente para evitar lesões e overtraining.' });
+  }
+  if (imcNum >= 30) {
+    advices.push({ icon: '🏥', text: 'IMC elevado detectado. Seu plano iniciará com exercícios de baixo impacto para proteger suas articulações.' });
+  }
+  if (!advices.length) {
+    advices.push({ icon: '✅', text: 'Perfil analisado com sucesso! Você está pronto para começar sua jornada de transformação.' });
+  }
+
+  const list = document.getElementById('ss-advice-list');
+  list.innerHTML = advices.map(a => `<div class="ss-advice-item"><span class="ss-advice-icon">${a.icon}</span><span>${a.text}</span></div>`).join('');
+}
+
+// ── PASSWORD STRENGTH ───────────────────────────
+function checkPwdStrength(pwd) {
+  const fill = document.getElementById('pwd-strength-fill');
+  if (!fill) return;
+  let score = 0;
+  if (pwd.length >= 8) score++;
+  if (/[A-Z]/.test(pwd)) score++;
+  if (/[0-9]/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+  const colors = ['#ef4444','#f59e0b','#22c55e','#22c55e'];
+  const widths = ['25%','50%','75%','100%'];
+  fill.style.width = score > 0 ? widths[score-1] : '0%';
+  fill.style.background = score > 0 ? colors[score-1] : 'transparent';
+}
+
+// ── TRIAL SYSTEM ─────────────────────────────────
+const TRIAL_DAYS = 7;
+const TRIAL_KEY = 'fitforce_trial_start';
+
+function initTrialSystem() {
+  const u = state.currentUser;
+  if (!u || (u.plan !== 'free' && u.plan !== 'trial')) return;
+
+  // Set trial start date if not set
+  let trialStart = localStorage.getItem(TRIAL_KEY + '_' + u.id);
+  if (!trialStart) {
+    trialStart = Date.now().toString();
+    localStorage.setItem(TRIAL_KEY + '_' + u.id, trialStart);
+  }
+
+  const elapsed = Date.now() - parseInt(trialStart);
+  const daysElapsed = Math.floor(elapsed / (1000 * 60 * 60 * 24));
+  const daysLeft = Math.max(0, TRIAL_DAYS - daysElapsed);
+  const isExpired = daysLeft <= 0;
+
+  // ── Top bar
+  const planEl = document.getElementById('user-plan-display');
+  // ── Profile badge
+  const badgeEl = document.getElementById('trial-countdown-badge');
+  const planBadge = document.getElementById('profile-plan');
+  const cdText = document.getElementById('trial-countdown-text');
+  // ── Home bar
+  const homeBar = document.getElementById('trial-home-bar');
+  const thbTitle = document.getElementById('thb-title');
+
+  if (isExpired) {
+    if (planEl) planEl.innerHTML = '<span style="color:#ef4444;font-size:10px;font-weight:700">⏰ EXPIRADO</span>';
+    if (planBadge) { planBadge.textContent = 'EXPIRADO'; planBadge.style.background = '#ef4444'; planBadge.style.color = '#fff'; }
+    if (badgeEl) {
+      badgeEl.style.display = 'flex';
+      badgeEl.style.background = 'rgba(239,68,68,0.15)';
+      badgeEl.style.borderColor = 'rgba(239,68,68,0.4)';
+      badgeEl.style.color = '#ef4444';
+    }
+    if (cdText) cdText.textContent = 'Período gratuito encerrado';
+    if (homeBar) {
+      homeBar.style.display = 'flex';
+      homeBar.classList.add('expired');
+    }
+    if (thbTitle) thbTitle.textContent = '⏰ Trial encerrado — escolha um plano';
+    // Show expired modal with delay
+    setTimeout(() => {
+      const modal = document.getElementById('modal-trial-expired');
+      if (modal) modal.classList.remove('hidden');
+    }, 1500);
+  } else {
+    const dayWord = daysLeft === 1 ? 'dia' : 'dias';
+    const label = `${daysLeft} ${dayWord} grátis restantes`;
+    if (planEl) planEl.innerHTML = `<span class="trial-pill-topbar">🎁 ${label}</span>`;
+    if (planBadge) { planBadge.textContent = 'TRIAL PRO'; planBadge.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)'; planBadge.style.color = '#fff'; }
+    if (badgeEl) { badgeEl.style.display = 'flex'; }
+    if (cdText) cdText.textContent = label;
+    if (homeBar) homeBar.style.display = 'flex';
+    if (thbTitle) thbTitle.textContent = `🎁 ${label}`;
+  }
+}
+
+// Hook into launchApp to init trial
+const _origLaunchApp = launchApp;
+window.launchApp = function() {
+  _origLaunchApp();
+  setTimeout(initTrialSystem, 300);
+};
+
+// Override generateWorkout to also pull name from step 1
+const _origGenerateWorkout = generateWorkout;
+window.generateWorkout = function() {
+  const h = document.getElementById('q-height').value;
+  const w = document.getElementById('q-weight').value;
+  const age = document.getElementById('q-age').value;
+  const gender = document.getElementById('q-gender').value;
+  if (!age || !w || !h || !gender) { showToast('⚠️ Preencha seus dados físicos'); return; }
+  const name = state.quizData.name || '';
+  if (name && state.currentUser) state.currentUser.name = name;
+  state.quizData = { ...state.quizData, age: +age, weight: +w, height: +h, gender };
+  showScreen('generating');
+  runGenerationAnimation();
+};
+
+// Initialize progress dots for 10 steps on load
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('progress-steps-container');
+  if (!container) return;
+  for (let i = 1; i <= 10; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot' + (i === 1 ? ' active' : '');
+    container.appendChild(dot);
+    if (i < 10) {
+      const line = document.createElement('div');
+      line.className = 'step-line';
+      container.appendChild(line);
+    }
+  }
+  document.getElementById('step-label').textContent = 'Passo 1 de 10';
+
+  // Injury toggle
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.food-btn');
+    if (btn && btn.closest('#step7')) {
+      setTimeout(() => {
+        const grp = document.getElementById('injury-detail-group');
+        if (grp) grp.style.display = state.quizData.hasInjury === 'Sim' ? 'block' : 'none';
+      }, 50);
+    }
+  });
+});
+
+function showProfileSheet() {
+  renderProfile();
+  document.getElementById('profile-sheet').classList.remove('hidden');
+}
 
 // Update home nutrition mini on tab switch
 const origSwitchTab = switchTab;
@@ -817,5 +1881,6 @@ function updateHomeMiniNutrition() {
   if (k) k.textContent = cal;
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
