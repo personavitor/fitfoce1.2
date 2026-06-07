@@ -1806,8 +1806,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Splash e autenticação em paralelo
+  // Timeout de 5s para redes móveis lentas — evita travamento infinito
   const splashTimer = new Promise(r => setTimeout(r, 1400));
-  const sessionPromise = db.auth.getSession();
+  const sessionTimeout = new Promise(r => setTimeout(() => r({ data: { session: null } }), 5000));
+  const sessionPromise = Promise.race([db.auth.getSession(), sessionTimeout]);
   const [, { data: { session } }] = await Promise.all([splashTimer, sessionPromise]);
 
   if (session) {
