@@ -1797,10 +1797,19 @@ window.addEventListener('DOMContentLoaded', async () => {
   const freePlan = document.querySelector('.plan-card');
   if (freePlan) freePlan.classList.add('selected');
 
-  // Aguarda o splash e tenta restaurar sessão do Supabase
-  await new Promise(r => setTimeout(r, 2400));
+  // Se aberto via file://, pula Supabase (sem servidor = timeout de 40s)
+  const isLocalFile = location.protocol === 'file:';
+  if (isLocalFile) {
+    await new Promise(r => setTimeout(r, 1400));
+    showScreen('auth');
+    return;
+  }
 
-  const { data: { session } } = await db.auth.getSession();
+  // Splash e autenticação em paralelo
+  const splashTimer = new Promise(r => setTimeout(r, 1400));
+  const sessionPromise = db.auth.getSession();
+  const [, { data: { session } }] = await Promise.all([splashTimer, sessionPromise]);
+
   if (session) {
     const hasSession = await loadData();
     if (hasSession && state.currentUser) {
