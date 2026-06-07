@@ -1648,41 +1648,28 @@ async function loadData() {
     const { data: { user: authUser } } = await db.auth.getUser();
     if (!authUser) return false;
 
-    // Perfil
-    const { data: profile, error: pErr } = await db
-      .from('profiles')
-      .select('*')
-      .eq('id', authUser.id)
-      .single();
+    // Todas as queries em paralelo
+    const [
+      { data: profile, error: pErr },
+      { data: workoutHistory },
+      { data: nutritionLog },
+      { data: progressLog },
+      { data: friendRows },
+      { data: challenges },
+    ] = await Promise.all([
+      db.from('profiles').select('*').eq('id', authUser.id).single(),
+      db.from('workout_history').select('*').eq('user_id', authUser.id).order('logged_at', { ascending: true }),
+      db.from('nutrition_log').select('*').eq('user_id', authUser.id).order('logged_at', { ascending: true }),
+      db.from('progress_log').select('*').eq('user_id', authUser.id).order('logged_at', { ascending: true }),
+      db.from('friends').select('friend_id').eq('user_id', authUser.id),
+      db.from('challenges')
+        .select('*, challenger:profiles!challenges_challenger_id_fkey(name), challenged:profiles!challenges_challenged_id_fkey(name)')
+        .or(`challenger_id.eq.${authUser.id},challenged_id.eq.${authUser.id}`)
+        .neq('status', 'finished'),
+    ]);
     if (pErr || !profile) return false;
 
-    // Histórico de treinos
-    const { data: workoutHistory } = await db
-      .from('workout_history')
-      .select('*')
-      .eq('user_id', authUser.id)
-      .order('logged_at', { ascending: true });
-
-    // Log de nutrição
-    const { data: nutritionLog } = await db
-      .from('nutrition_log')
-      .select('*')
-      .eq('user_id', authUser.id)
-      .order('logged_at', { ascending: true });
-
-    // Log de progresso/peso
-    const { data: progressLog } = await db
-      .from('progress_log')
-      .select('*')
-      .eq('user_id', authUser.id)
-      .order('logged_at', { ascending: true });
-
-    // Amigos
-    const { data: friendRows } = await db
-      .from('friends')
-      .select('friend_id')
-      .eq('user_id', authUser.id);
-
+    // Perfis de amigos (depende do resultado de friendRows, roda separado)
     const friendIds = (friendRows || []).map(r => r.friend_id);
     let friendProfiles = [];
     if (friendIds.length > 0) {
@@ -1692,13 +1679,6 @@ async function loadData() {
         .in('id', friendIds);
       friendProfiles = fps || [];
     }
-
-    // Desafios
-    const { data: challenges } = await db
-      .from('challenges')
-      .select('*, challenger:profiles!challenges_challenger_id_fkey(name), challenged:profiles!challenges_challenged_id_fkey(name)')
-      .or(`challenger_id.eq.${authUser.id},challenged_id.eq.${authUser.id}`)
-      .neq('status', 'finished');
 
     // Montar objeto de usuário
     const mappedUser = {
