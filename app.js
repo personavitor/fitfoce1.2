@@ -1785,13 +1785,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // Splash e autenticação em paralelo
+  // Splash e autenticação em paralelo, com timeout de segurança de 6s
   const splashTimer = new Promise(r => setTimeout(r, 1400));
-  const sessionPromise = db.auth.getSession();
+  const timeoutFallback = new Promise(r => setTimeout(() => r({ data: { session: null } }), 6000));
+  const sessionPromise = Promise.race([db.auth.getSession(), timeoutFallback]);
   const [, { data: { session } }] = await Promise.all([splashTimer, sessionPromise]);
 
   if (session) {
-    const hasSession = await loadData();
+    const loadTimeout = new Promise(r => setTimeout(() => r(false), 8000));
+    const hasSession = await Promise.race([loadData(), loadTimeout]);
     if (hasSession && state.currentUser) {
       if (state.currentUser.workoutPlan) {
         state.workoutPlan = state.currentUser.workoutPlan;

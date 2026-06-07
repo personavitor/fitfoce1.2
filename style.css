@@ -188,13 +188,15 @@ body::before {
   height: 100%;
   background: linear-gradient(90deg, var(--accent), var(--neon));
   border-radius: 99px;
-  animation: load 1.2s var(--ease) forwards;
+  animation: load 1.4s var(--ease) infinite;
   box-shadow: 0 0 12px var(--accent-glow);
+  width: 40%;
+  position: absolute;
 }
 
 @keyframes load {
-  from { width: 0; }
-  to   { width: 100%; }
+  0%   { left: -40%; }
+  100% { left: 110%; }
 }
 
 /* ════════════════════════════════════════
